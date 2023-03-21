@@ -199,7 +199,7 @@ function DesktopHeader() {
                   variant: 'h5',
                   marginTop: 0.5
                 }}
-                primary={t('Ping Latency')}
+                primary={t('First')}
               />
             </MenuItem>
             <MenuItem>
@@ -214,86 +214,11 @@ function DesktopHeader() {
                   variant: 'h5',
                   marginTop: 0.5
                 }}
-                primary={t('Blacklist Check')}
+                primary={t('Second')}
               />
             </MenuItem>
           </MenuListWrapperSecondary>
-          <MenuListWrapperSecondary disablePadding>
-            <Typography
-              noWrap
-              variant="h4"
-              paddingLeft={2.5}
-              paddingBottom={1}
-              fontWeight={'bold'}
-            >
-              {t('Info')}
-            </Typography>
-            <Divider />
-            <MenuItem
-              selected={router.pathname === '/about-us' ? true : false}
-              sx={{ marginTop: 1 }}
-              onClick={() => {
-                router.push('/about-us');
-                handleClose();
-              }}
-            >
-              <InfoIcon
-                sx={{
-                  color: `${theme.colors.primary.main}`,
-                  marginRight: 1
-                }}
-              />
-              <ListItemText
-                primaryTypographyProps={{
-                  variant: 'h5',
-                  marginTop: 0.5
-                }}
-                primary={t('About Us')}
-              />
-            </MenuItem>
-            <MenuItem
-              selected={router.pathname === '/privacy-policy' ? true : false}
-              onClick={() => {
-                handleClose();
-                router.push('/privacy-policy');
-              }}
-            >
-              <PrivacyTipIcon
-                sx={{
-                  color: `${theme.colors.primary.main}`,
-                  marginRight: 1
-                }}
-              />
-              <ListItemText
-                primaryTypographyProps={{
-                  variant: 'h5',
-                  marginTop: 0.5
-                }}
-                primary={t('Privacy Policy')}
-              />
-            </MenuItem>
-            <MenuItem
-              selected={router.pathname === '/cookies' ? true : false}
-              onClick={() => {
-                handleClose();
-                router.push('/cookies');
-              }}
-            >
-              <CookieIcon
-                sx={{
-                  color: `${theme.colors.primary.main}`,
-                  marginRight: 1
-                }}
-              />
-              <ListItemText
-                primaryTypographyProps={{
-                  variant: 'h5',
-                  marginTop: 0.5
-                }}
-                primary={t('Cookies')}
-              />
-            </MenuItem>
-          </MenuListWrapperSecondary>
+        
         </Stack>
       </Popover>
     </>

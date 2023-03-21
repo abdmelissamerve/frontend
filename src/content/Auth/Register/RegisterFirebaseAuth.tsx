@@ -32,6 +32,7 @@ export const RegisterFirebaseAuth: FC = (props) => {
       lastName: '',
       email: '',
       password: '',
+      phoneNumber: '',
       terms: true,
       submit: null
     },
@@ -50,6 +51,10 @@ export const RegisterFirebaseAuth: FC = (props) => {
         .min(8)
         .max(255)
         .required(t('The password field is required')),
+      phoneNumber: Yup.string()
+        .min(10)
+        .max(10)
+        .required(t('The phone number field is required')),
       terms: Yup.boolean().oneOf(
         [true],
         t('You must agree to our terms and conditions')
@@ -57,29 +62,18 @@ export const RegisterFirebaseAuth: FC = (props) => {
     }),
     onSubmit: async (values, helpers): Promise<void> => {
       const data = {
-        first_name: values.firstName,
-        last_name: values.lastName,
+        firstName: values.firstName,
+        lastName: values.lastName,
         email: values.email,
         password: values.password,
-        registered_from: 'pinglatency.com'
+        phoneNumber: values.phoneNumber
       };
       try {
-        const registered = await createUserWithEmailAndPassword(
-          values.email,
-          values.password
-        );
-        try {
-          await apiInstance.registerUser(data);
-          if (isMountedRef() && registered.user.uid) {
+          const user = await apiInstance.registerUser(data);
+          if (isMountedRef() && user) {
             const backTo = (router.query.backTo as string) || '/';
             router.push(backTo);
           }
-        } catch (err) {
-          console.error(err);
-          helpers.setStatus({ success: false });
-          helpers.setErrors({ submit: err.detail });
-          helpers.setSubmitting(false);
-        }
       } catch (err) {
         console.error(err);
 
@@ -159,6 +153,22 @@ export const RegisterFirebaseAuth: FC = (props) => {
               onChange={formik.handleChange}
               type="password"
               value={formik.values.password}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={12} lg={12} style={{ paddingTop: 0 }}>
+            <TextField
+              error={Boolean(formik.touched.phoneNumber && formik.errors.phoneNumber)}
+              fullWidth
+              helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
+              label={t('Phone Number')}
+              placeholder={t('Your phone number here...')}
+              margin="normal"
+              name="phoneNumber"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              type="text"
+              value={formik.values.phoneNumber}
               variant="outlined"
             />
           </Grid>

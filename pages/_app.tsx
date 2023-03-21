@@ -18,15 +18,13 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import useScrollTop from 'src/hooks/useScrollTop';
 import { SnackbarProvider } from 'notistack';
 import { AuthConsumer, AuthProvider } from 'src/contexts/FirebaseAuthContext';
+import { Provider as ReduxProvider } from 'react-redux';
+import { store } from 'src/store';
 import * as gtag from '../lib/gtag';
 import * as ym from '../lib/ym';
 import {
-  GA_TRACKING_ID,
-  YM_TRACKING_ID,
-  isProd,
-  RECAPTCHA_KEY
+  isProd
 } from '../config';
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import Footer from '@/components/Footer';
 import MobileHeader from '@/components/Header/Mobile';
 import DesktopHeader from '@/components/Header/Desktop';
@@ -72,64 +70,13 @@ function MyApp(props: MyAppProps) {
   return (
     <CacheProvider value={emotionCache}>
       <Head>
-        <title>Ping Latency Tool</title>
-        <meta charSet="UTF-8" />
-        <meta
-          name="description"
-          content="Test the latency of your server from all over the world with this awesome &amp; free ping benchmark tool"
-        />
-        <meta
-          name="keywords"
-          content="ping, latency, tool, ping latency, benchmark server latency, ping server"
-        />
+        <title>Admintools.io</title>
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
-        {isProd && (
-          <>
-            <script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
-            />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${GA_TRACKING_ID}');`
-              }}
-            />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-              (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-              m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-              (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-              ym(${YM_TRACKING_ID}, "init", {
-                  defer: true,
-                  clickmap:true,
-                  trackLinks:true,
-                  accurateTrackBounce:true,
-                  webvisor:true
-              });`
-              }}
-            />
-            <noscript>
-              <div>
-                <img
-                  src="https://mc.yandex.ru/watch/88708213"
-                  style={{ position: 'absolute', left: '-9999px' }}
-                  alt=""
-                />
-              </div>
-            </noscript>
-          </>
-        )}
       </Head>
-      {/*<ReduxProvider store={store}>*/}
+      <ReduxProvider store={store}>
       <ThemeProvider>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <AuthProvider>
@@ -141,22 +88,6 @@ function MyApp(props: MyAppProps) {
               }}
             >
               <CssBaseline />
-              <div style={{ zIndex: 999 }} id="recaptcha"></div>
-              <GoogleReCaptchaProvider
-                reCaptchaKey={RECAPTCHA_KEY}
-                scriptProps={{
-                  async: false,
-                  defer: false,
-                  appendTo: 'head',
-                  nonce: undefined
-                }}
-                container={{
-                  element: 'recaptcha',
-                  parameters: {
-                    badge: 'bottomleft'
-                  }
-                }}
-              >
                 <AuthConsumer>
                   {(auth) => (
                     // !auth.isInitialized ? (
@@ -206,18 +137,16 @@ function MyApp(props: MyAppProps) {
                           paddingX: 4
                         }}
                       >
-               
                         <Footer />
                       </Box>
                     </>
                   )}
                 </AuthConsumer>
-              </GoogleReCaptchaProvider>
             </SnackbarProvider>
           </AuthProvider>
         </LocalizationProvider>
       </ThemeProvider>
-      {/*</ReduxProvider>*/}
+      </ReduxProvider>
     </CacheProvider>
   );
 }

@@ -196,7 +196,7 @@ function HeaderUserbox() {
 
   const handleRedirectEditPage = async (): Promise<void> => {
     try {
-      router.push('/profile');
+      // router.push('/profile');
     } catch (error) {
       console.error(error);
     }

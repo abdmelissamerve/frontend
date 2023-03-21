@@ -46,7 +46,7 @@ function Logo() {
       <Box
         component={'img'}
         onClick={() => router.push('/')}
-        alt="AdminTools"
+        alt="CSML"
         src="/static/images/logo/logo_mobile.webp"
         sx={{
           cursor: 'pointer',
