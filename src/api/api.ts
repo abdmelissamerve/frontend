@@ -68,7 +68,7 @@ export class Api {
     }
 
     async fetchCurrentUser(): Promise<any> {
-        const response = await this.apisauce.get(`profile/`, {}, {});
+        const response = await this.apisauce.get(`/user/profile/`, {}, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
             if (problem) throw problem;

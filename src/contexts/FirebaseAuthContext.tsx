@@ -1,5 +1,4 @@
 import { FC, ReactNode, createContext, useEffect, useReducer } from 'react';
-import { User } from 'src/models/user';
 import firebase from 'src/utils/firebase';
 import PropTypes from 'prop-types';
 import { apiInstance } from '@/config/api';
@@ -7,7 +6,7 @@ import { apiInstance } from '@/config/api';
 interface AuthState {
   isInitialized: boolean;
   isAuthenticated: boolean;
-  user: User | null;
+  user: any | null;
 }
 
 interface AuthContextValue extends AuthState {
@@ -30,7 +29,7 @@ type AuthStateChangedAction = {
   type: 'AUTH_STATE_CHANGED';
   payload: {
     isAuthenticated: boolean;
-    user: User | null;
+    user: any | null;
   };
 };
 
@@ -86,15 +85,15 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
           };
           try {
             const response = await apiInstance.fetchCurrentUser();
+            console.log(response);
             userObj = {
               ...userObj,
-              id: response.data.id,
-              photo_url: response.data.photo_URL
-                ? response.data.photo_URL
+              id: response.data.user.id,
+              photo_url: response.data.user.photo_URL
+                ? response.data.user.photo_URL
                 : user.photoURL,
-              name: response.data.first_name + ' ' + response.data.last_name,
-              role: response.data.role,
-              is_active: response.data.is_active
+              name: response.data.user.firstName + ' ' + response.data.user.lastName,
+              role: response.data.user.role,
             };
           } catch (err) {
             console.error(err);
