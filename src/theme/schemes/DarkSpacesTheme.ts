@@ -105,10 +105,6 @@ const colors = {
     main: themeColors.primary,
     dark: darken(themeColors.primary, 0.2)
   },
-  header: {
-    light: 'red',
-    dark: '#C5BFB2'
-  },
   success: {
     lighter: alpha(themeColors.success, 0.85),
     light: alpha(themeColors.success, 0.3),
@@ -201,10 +197,6 @@ export const DarkSpacesTheme = createTheme({
       main: themeColors.primary,
       dark: darken(themeColors.primary, 0.2)
     },
-    header: {
-      light: 'red',
-      dark: '#C5BFB2'
-    },
     success: {
       lighter: alpha(themeColors.success, 0.1),
       light: alpha(themeColors.success, 0.3),
@@ -253,8 +245,7 @@ export const DarkSpacesTheme = createTheme({
   },
   header: {
     height: '80px',
-    // background: themeColors.primaryAlt,
-    background: '#1C1C1C',
+    background: themeColors.primaryAlt,
     boxShadow: '0px 1px 0px' + themeColors.primaryAlt,
     textColor: colors.secondary.main
   },
@@ -325,11 +316,10 @@ export const DarkSpacesTheme = createTheme({
   breakpoints: {
     values: {
       xs: 0,
-      sm: 576,
-      md: 768,
-      lg: 992,
-      xl: 1200,
-      xxl: 1400
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1840
     }
   },
   components: {

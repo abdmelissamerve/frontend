@@ -1,5 +1,3 @@
-csml-final.com
-
 # Setup
 
 1. Copy `.env.template` to `.env`.

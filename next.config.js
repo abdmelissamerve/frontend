@@ -5,12 +5,13 @@ const calendarTranspile = require('next-transpile-modules')([
   '@fullcalendar/list',
   '@fullcalendar/timegrid'
 ]);
-const { withSentryConfig } = require('@sentry/nextjs');
+
 const withImages = require('next-images');
+const { withSentryConfig } = require('@sentry/nextjs');
 
 const moduleExports = withImages(
   calendarTranspile({
-    distDir: 'build',
+    // distDir: 'build',
     i18n: {
       defaultLocale: 'en',
       locales: ['en']
@@ -18,9 +19,13 @@ const moduleExports = withImages(
     typescript: {
       ignoreBuildErrors: true
     },
+    images: {
+      disableStaticImages: true
+    },
     eslint: { ignoreDuringBuilds: true }
   })
 );
+
 const sentryWebpackPluginOptions = {
   // Additional config options for the Sentry Webpack plugin. Keep in mind that
   // the following options are set automatically, and overriding them is not

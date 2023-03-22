@@ -24,7 +24,7 @@ export const Authenticated: FC<AuthenticatedProps> = (props) => {
 
     if (!auth.isAuthenticated) {
       router.push({
-        pathname: '/auth/login/cover',
+        pathname: '/',
         query: { backTo: router.asPath }
       });
     } else {

@@ -20,8 +20,8 @@ export const Guest: FC<GuestProps> = (props) => {
       return;
     }
 
-    if (auth.isAuthenticated && router.pathname === '/login') {
-      router.push('/');
+    if (auth.isAuthenticated && demo !== 'true') {
+      router.push('/workers');
     } else {
       setVerified(true);
     }

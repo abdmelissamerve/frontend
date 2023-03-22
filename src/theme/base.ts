@@ -2,7 +2,11 @@ import React from 'react';
 
 import { Theme } from '@mui/material';
 import { PureLightTheme } from './schemes/PureLightTheme';
+import { GreyGooseTheme } from './schemes/GreyGooseTheme';
+import { NebulaFighterTheme } from './schemes/NebulaFighterTheme';
 import { DarkSpacesTheme } from './schemes/DarkSpacesTheme';
+import { PurpleFlowTheme } from './schemes/PurpleFlowTheme';
+import { GreenFieldsTheme } from './schemes/GreenFieldsTheme';
 
 export function themeCreator(theme: string): Theme {
   return themeMap[theme];
@@ -72,10 +76,6 @@ declare module '@mui/material/styles' {
         lighter: string;
         light: string;
         main: string;
-        dark: string;
-      };
-      header: {
-        light: string;
         dark: string;
       };
       success: {
@@ -197,10 +197,6 @@ declare module '@mui/material/styles' {
         main: string;
         dark: string;
       };
-      header: {
-        light: string;
-        dark: string;
-      };
       success: {
         lighter: string;
         light: string;
@@ -259,5 +255,9 @@ declare module '@mui/material/styles' {
 
 const themeMap: { [key: string]: Theme } = {
   PureLightTheme,
-  DarkSpacesTheme
+  GreyGooseTheme,
+  PurpleFlowTheme,
+  NebulaFighterTheme,
+  DarkSpacesTheme,
+  GreenFieldsTheme
 };

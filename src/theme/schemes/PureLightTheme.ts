@@ -52,7 +52,7 @@ const colors = {
   },
   layout: {
     general: {
-      bodyBg: '#FBFBFD'
+      bodyBg: '#f2f5f9'
     },
     sidebar: {
       background: themeColors.white,
@@ -104,10 +104,6 @@ const colors = {
     light: lighten(themeColors.primary, 0.3),
     main: themeColors.primary,
     dark: darken(themeColors.primary, 0.2)
-  },
-  header: {
-    light: 'red',
-    dark: '#5A5444'
   },
   success: {
     lighter: lighten(themeColors.success, 0.85),
@@ -201,10 +197,6 @@ export const PureLightTheme = createTheme({
       main: themeColors.primary,
       dark: darken(themeColors.primary, 0.2)
     },
-    header: {
-      light: 'red',
-      dark: '#5A5444'
-    },
     success: {
       lighter: alpha(themeColors.success, 0.1),
       light: lighten(themeColors.success, 0.3),
@@ -254,9 +246,7 @@ export const PureLightTheme = createTheme({
   },
   header: {
     height: '80px',
-    // background: themeColors.primaryAlt,
-    // background: '#e0e0dc',
-    background: '#FFFFFF',
+    background: colors.alpha.white[100],
     boxShadow: colors.shadows.cardSm,
     textColor: colors.secondary.main
   },
@@ -328,11 +318,10 @@ export const PureLightTheme = createTheme({
   breakpoints: {
     values: {
       xs: 0,
-      sm: 576,
-      md: 768,
-      lg: 992,
-      xl: 1200,
-      xxl: 1400
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1840
     }
   },
   components: {

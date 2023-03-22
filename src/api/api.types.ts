@@ -1,14 +1,18 @@
-import { AnyArray } from 'immer/dist/internal';
+import type { Provider, User, Worker } from '../types';
 import type { GeneralApiProblem } from './api-problem';
 
 export interface Auth {
   access_token: string;
-  user: AnyArray;
+  user: User;
 }
 
-export type GetWorkersResult = { kind: 'ok'; data: any } | GeneralApiProblem;
+export type GetWorkersResult =
+  | { kind: 'ok'; data: Worker[] }
+  | GeneralApiProblem;
 
-export type GetProvidersResult = { kind: 'ok'; data: any } | GeneralApiProblem;
+export type GetProvidersResult =
+  | { kind: 'ok'; data: Provider[] }
+  | GeneralApiProblem;
 
 export type GetRegisterResult = { kind: 'ok'; data: Auth } | GeneralApiProblem;
 

@@ -1,9 +1,21 @@
-import { Box, Typography, Container, Button, styled } from '@mui/material';
+import {
+  Box,
+  Card,
+  Typography,
+  Container,
+  Divider,
+  Button,
+  FormControl,
+  OutlinedInput,
+  InputAdornment,
+  styled
+} from '@mui/material';
 import Head from 'next/head';
-// import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
+import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
 import type { ReactElement } from 'react';
+import BaseLayout from 'src/layouts/BaseLayout';
+
 import { useTranslation } from 'react-i18next';
-import { useRouter } from 'next/router';
 
 const MainContent = styled(Box)(
   () => `
@@ -25,21 +37,21 @@ const TopWrapper = styled(Box)(
 `
 );
 
-// const OutlinedInputWrapper = styled(OutlinedInput)(
-//   ({ theme }) => `
-//     background-color: ${theme.colors.alpha.white[100]};
-// `
-// );
+const OutlinedInputWrapper = styled(OutlinedInput)(
+  ({ theme }) => `
+    background-color: ${theme.colors.alpha.white[100]};
+`
+);
 
-// const ButtonSearch = styled(Button)(
-//   ({ theme }) => `
-//     margin-right: -${theme.spacing(1)};
-// `
-// );
+const ButtonSearch = styled(Button)(
+  ({ theme }) => `
+    margin-right: -${theme.spacing(1)};
+`
+);
 
 function Status404() {
   const { t }: { t: any } = useTranslation();
-  const router = useRouter();
+
   return (
     <>
       <Head>
@@ -53,14 +65,7 @@ function Status404() {
               <Typography variant="h2" sx={{ my: 2 }}>
                 {t("The page you were looking for doesn't exist.")}
               </Typography>
-              <Button
-                onClick={() => router.push('/')}
-                sx={{ mt: 2 }}
-                variant={'contained'}
-              >
-                Go Home
-              </Button>
-              {/* <Typography
+              <Typography
                 variant="h4"
                 color="text.secondary"
                 fontWeight="normal"
@@ -69,9 +74,9 @@ function Status404() {
                 {t(
                   "It's on us, we moved the content to a different page. The search below should help!"
                 )}
-              </Typography> */}
+              </Typography>
             </Box>
-            {/* <Container maxWidth="sm">
+            <Container maxWidth="sm">
               <Card sx={{ textAlign: 'center', mt: 3, p: 4 }}>
                 <FormControl variant="outlined" fullWidth>
                   <OutlinedInputWrapper
@@ -96,7 +101,7 @@ function Status404() {
                   {t('Go to homepage')}
                 </Button>
               </Card>
-            </Container> */}
+            </Container>
           </Container>
         </TopWrapper>
       </MainContent>
@@ -107,5 +112,5 @@ function Status404() {
 export default Status404;
 
 Status404.getLayout = function getLayout(page: ReactElement) {
-  return page;
+  return <BaseLayout>{page}</BaseLayout>;
 };

@@ -1,21 +1,27 @@
 import {
+  Box,
   Tooltip,
   Badge,
   TooltipProps,
   tooltipClasses,
   styled,
-  useTheme,
-  Box
+  useTheme
 } from '@mui/material';
-import { useRouter } from 'next/router';
 import Link from 'src/components/Link';
 import { useTranslation } from 'react-i18next';
 
-const ImgWrapper = styled('img')(
+const LogoWrapper = styled('div')(
+  () => `
+    text-align: center;
+  `
+);
+
+const LogoLink = styled(Link)(
   ({ theme }) => `
-    cursor: pointer;
-    width: 50px;
-    height: 41px
+    color: ${theme.palette.text.primary};
+    text-decoration: none;
+    display: inline-block;
+    font-weight: ${theme.typography.fontWeightBold};
 `
 );
 
@@ -38,25 +44,16 @@ const TooltipWrapper = styled(({ className, ...props }: TooltipProps) => (
 
 function Logo() {
   const { t }: { t: any } = useTranslation();
-  const router = useRouter();
-  // const theme = useTheme();
+  const theme = useTheme();
 
   return (
-    <div>
-      <Box
-        component={'img'}
-        onClick={() => router.push('/')}
-        alt="CSML"
-        src="/static/images/logo/logo_mobile.webp"
-        sx={{
-          cursor: 'pointer',
-          width: '50px',
-          height: '41px',
-          display: 'flex',
-          alignItems: 'center'
-        }}
-      />
-    </div>
+    <TooltipWrapper title={t('AdminTools')} arrow>
+      <LogoWrapper>
+        <LogoLink href="/">
+          <img src="/static/images/logo/logo.svg" />
+        </LogoLink>
+      </LogoWrapper>
+    </TooltipWrapper>
   );
 }
 

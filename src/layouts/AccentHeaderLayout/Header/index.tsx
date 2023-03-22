@@ -1,4 +1,13 @@
+import { useContext } from 'react';
+
 import { Box, Card, IconButton, Tooltip, alpha, styled } from '@mui/material';
+import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
+import { SidebarContext } from 'src/contexts/SidebarContext';
+import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
+import HeaderSearch from './Search';
+import HeaderButtons from './Buttons';
+import HeaderUserbox from './Userbox';
+
 import Logo from './Logo';
 
 const HeaderWrapper = styled(Card)(
@@ -8,8 +17,9 @@ const HeaderWrapper = styled(Card)(
     padding: ${theme.spacing(0, 2)};
     right: 0;
     z-index: 6;
-    background-color: ${alpha(theme.colors.alpha.white[100], 0.95)};
+    background-color: ${alpha(theme.colors.primary.main, 0.95)};
     backdrop-filter: blur(3px);
+    position: fixed;
     justify-content: space-between;
     width: 100%;
     display: flex;
@@ -17,7 +27,7 @@ const HeaderWrapper = styled(Card)(
     border-radius: 0;
 `
 );
-// background-color: ${alpha(theme.colors.primary.main, 0.95)};
+
 const IconButtonPrimary = styled(IconButton)(
   ({ theme }) => `
     background: ${theme.colors.alpha.trueWhite[10]};
@@ -49,22 +59,24 @@ const BoxLogoWrapper = styled(Box)(
 );
 
 function Header() {
+  const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
+
   return (
     <HeaderWrapper>
-      <Box style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+      <Box display="flex" alignItems="center">
         <BoxLogoWrapper>
           <Logo />
         </BoxLogoWrapper>
-        {/* <Box
+        <Box
           component="span"
           sx={{
             display: { xs: 'none', sm: 'inline-block' }
           }}
         >
           <HeaderSearch />
-        </Box> */}
+        </Box>
       </Box>
-      {/* <Box display="flex" alignItems="center">
+      <Box display="flex" alignItems="center">
         <HeaderButtons />
         <HeaderUserbox />
         <Box
@@ -79,7 +91,7 @@ function Header() {
             </IconButtonPrimary>
           </Tooltip>
         </Box>
-      </Box> */}
+      </Box>
     </HeaderWrapper>
   );
 }
