@@ -33,7 +33,7 @@ function EditProfileTab() {
   const getProfile = useCallback(async () => {
     try {
       const response = await fetchCurrentUser();
-      setProfile(response.data);
+      setProfile(response.data.user);
     } catch (err) {
       console.log(err);
     }
@@ -113,7 +113,7 @@ function EditProfileTab() {
                         </Grid>
                         <Grid item xs={12} sm={8} md={9}>
                           <Text color="black">
-                            <b>{profile?.first_name}</b>
+                            <b>{profile?.firstName}</b>
                           </Text>
                         </Grid>
                         <Grid
@@ -129,7 +129,7 @@ function EditProfileTab() {
                         </Grid>
                         <Grid item xs={12} sm={8} md={9}>
                           <Text color="black">
-                            <b>{profile?.last_name}</b>
+                            <b>{profile?.lastName}</b>
                           </Text>
                         </Grid>
 
