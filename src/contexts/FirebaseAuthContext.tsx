@@ -1,13 +1,12 @@
 import { FC, ReactNode, createContext, useEffect, useReducer } from 'react';
-import { User } from 'src/models/user';
 import firebase from 'src/utils/firebase';
 import PropTypes from 'prop-types';
-import { fetchCurrentUser } from 'src/services/users';
+import { apiInstance } from '@/api-config/api';
 
 interface AuthState {
   isInitialized: boolean;
   isAuthenticated: boolean;
-  user: User | null;
+  user: any | null;
 }
 
 interface AuthContextValue extends AuthState {
@@ -19,6 +18,7 @@ interface AuthContextValue extends AuthState {
   signInWithEmailAndPassword: (email: string, password: string) => Promise<any>;
   signInWithGoogle: () => Promise<any>;
   logout: () => Promise<void>;
+  sendPasswordResetEmail: (email: string) => Promise<any>;
 }
 
 interface AuthProviderProps {
@@ -29,7 +29,7 @@ type AuthStateChangedAction = {
   type: 'AUTH_STATE_CHANGED';
   payload: {
     isAuthenticated: boolean;
-    user: User | null;
+    user: any | null;
   };
 };
 
@@ -62,7 +62,8 @@ export const AuthContext = createContext<AuthContextValue>({
   createUserWithEmailAndPassword: () => Promise.resolve(),
   signInWithEmailAndPassword: () => Promise.resolve(),
   signInWithGoogle: () => Promise.resolve(),
-  logout: () => Promise.resolve()
+  logout: () => Promise.resolve(),
+  sendPasswordResetEmail: () => Promise.resolve()
 });
 
 export const AuthProvider: FC<AuthProviderProps> = (props) => {
@@ -70,73 +71,44 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   const [state, dispatch] = useReducer(reducer, initialAuthState);
 
   useEffect(() => {
-    // firebase.auth().onIdTokenChanged((user) => {
-    //   if (user) {
-    //     user.getIdToken().then(function (idToken) {
-    //       sessionStorage.setItem('access_token', idToken);
-    //     });
-    //     (async () => {
-    //       try {
-    //         const response = await fetchCurrentUser();
-    //         dispatch({
-    //           type: 'AUTH_STATE_CHANGED',
-    //           payload: {
-    //             isAuthenticated: true,
-    //             user: {
-    //               id: user.uid,
-    //               jobtitle: 'Lead Developer',
-    //               photo_url: response.data.photo_url,
-    //               email: user.email,
-    //               first_name: response.data.first_name,
-    //               last_name: response.data.last_name,
-    //               is_superuser: response.data.is_superuser,
-    //               is_active: response.data.is_active,
-    //               registered_from: response.data.registered_from,
-    //               register_provider: response.data.register_provider
-    //             }
-    //           }
-    //         });
-    //       } catch (e) {
-    //         console.error(e);
-    //       }
-    //     })();
-    //   } else {
-    //     sessionStorage.removeItem('access_token');
-    //     dispatch({
-    //       type: 'AUTH_STATE_CHANGED',
-    //       payload: {
-    //         isAuthenticated: false,
-    //         user: null
-    //       }
-    //     });
-    //   }
-    // });
-
-    firebase.auth().onAuthStateChanged((user) => {
+    firebase.auth().onIdTokenChanged((user) => {
       if (user) {
         user.getIdToken().then(async (idToken) => {
-          const response = await fetchCurrentUser();
+          let userObj = {
+            uid: user.uid,
+            email: user.email,
+            photo_url: user.photoURL,
+            name: user.displayName,
+            role: 'user',
+            is_active: false,
+            id: null
+          };
+          try {
+            const response = await apiInstance.fetchCurrentUser();
+            console.log(response);
+            userObj = {
+              ...userObj,
+              id: response.data.user.id,
+              photo_url: response.data.user.photo_URL
+                ? response.data.user.photo_URL
+                : user.photoURL,
+              name: response.data.user.firstName + ' ' + response.data.user.lastName,
+              role: response.data.user.role,
+            };
+          } catch (err) {
+            console.error(err);
+          }
+
           dispatch({
             type: 'AUTH_STATE_CHANGED',
             payload: {
               isAuthenticated: true,
-              user: {
-                id: response.data.id,
-                jobtitle: 'Lead Developer',
-                photo_url: response.data.photo_url,
-                email: response.data.email,
-                first_name: response.data.first_name,
-                last_name: response.data.last_name,
-                is_superuser: response.data.is_superuser,
-                role: response.data.role,
-                is_active: response.data.is_active,
-                registered_from: response.data.registered_from,
-                register_provider: response.data.register_provider
-              }
+              user: userObj
             }
           });
         });
       } else {
+        sessionStorage.removeItem('access_token');
         dispatch({
           type: 'AUTH_STATE_CHANGED',
           payload: {
@@ -169,6 +141,10 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     await firebase.auth().signOut();
   };
 
+  const sendPasswordResetEmail = async (email: string): Promise<any> => {
+    firebase.auth().sendPasswordResetEmail(email);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -177,7 +153,8 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         createUserWithEmailAndPassword,
         signInWithEmailAndPassword,
         signInWithGoogle,
-        logout
+        logout,
+        sendPasswordResetEmail
       }}
     >
       {children}

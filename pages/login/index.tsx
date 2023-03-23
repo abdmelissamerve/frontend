@@ -1,49 +1,10 @@
-import {
-  Box,
-  Card,
-  Tooltip,
-  Typography,
-  Container,
-  Alert,
-  styled
-} from '@mui/material';
+import { Box, Card, Typography, Container, styled } from '@mui/material';
 import Head from 'next/head';
 import { useAuth } from 'src/hooks/useAuth';
 import { Guest } from 'src/components/Guest';
 import { LoginFirebaseAuth } from 'src/content/Auth/Login/LoginFirebaseAuth';
 import { useTranslation } from 'react-i18next';
-import Logo from 'src/components/LogoSign';
-import BaseLayout from 'src/layouts/BaseLayout';
-import Link from 'src/components/Link';
-import { useRouter } from 'next/router';
-
-const CardImg = styled(Card)(
-  ({ theme }) => `
-    width: 90px;
-    height: 80px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    background: ${theme.colors.alpha.white[100]};
-    margin: 0 ${theme.spacing(1)};
-    border: 1px solid ${theme.colors.alpha.black[10]};
-    transition: ${theme.transitions.create(['all'])};
-
-    &:hover {
-      border-color: ${theme.colors.primary.main};
-    }
-`
-);
-
-const BottomWrapper = styled(Box)(
-  ({ theme }) => `
-    padding: ${theme.spacing(3)};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`
-);
+import BaseLayout from '@/layouts/BaseLayout';
 
 const MainContent = styled(Box)(
   () => `
@@ -66,8 +27,6 @@ const TopWrapper = styled(Box)(
 function LoginBasic() {
   const { method } = useAuth() as any;
   const { t }: { t: any } = useTranslation();
-  const router = useRouter();
-  const { demo } = router.query;
 
   return (
     <>
@@ -77,7 +36,6 @@ function LoginBasic() {
       <MainContent>
         <TopWrapper>
           <Container maxWidth="sm">
-            <Logo />
             <Card
               sx={{
                 mt: 3,

@@ -1,3 +1,5 @@
-import LoginBasic from './auth/login';
+import LoginBasic from "./login";
+
+;
 
 export default LoginBasic;

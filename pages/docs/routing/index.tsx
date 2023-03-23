@@ -235,11 +235,11 @@ function Routing() {
               items: [
                 {
                   name: 'Basic',
-                  link: '/auth/login/basic?demo=true'
+                  link: '/login/basic?demo=true'
                 },
                 {
                   name: 'Cover',
-                  link: '/auth/login/cover?demo=true'
+                  link: '/login/cover?demo=true'
                 }
               ]
             },

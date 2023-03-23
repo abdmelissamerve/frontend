@@ -1,11 +1,10 @@
 import * as Yup from 'yup';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
-import { FC, useEffect } from 'react';
-import Link from 'src/components/Link';
-
+import { FC } from 'react';
 import {
   Box,
+  Link,
   Button,
   Divider,
   FormHelperText,
@@ -28,8 +27,7 @@ const ImgWrapper = styled('img')(
 
 export const LoginFirebaseAuth: FC = (props) => {
   const { t }: { t: any } = useTranslation();
-  const { signInWithEmailAndPassword, signInWithGoogle, user } =
-    useAuth() as any;
+  const { signInWithEmailAndPassword, signInWithGoogle } = useAuth() as any;
   const isMountedRef = useRefMounted();
   const router = useRouter();
 
@@ -56,9 +54,12 @@ export const LoginFirebaseAuth: FC = (props) => {
     onSubmit: async (values, helpers): Promise<void> => {
       try {
         await signInWithEmailAndPassword(values.email, values.password);
+        if (isMountedRef()) {
+          const backTo = (router.query.backTo as string) || '/';
+          router.push(backTo);
+        }
       } catch (err) {
         console.error(err);
-
         if (isMountedRef()) {
           helpers.setStatus({ success: false });
           helpers.setErrors({ submit: err.message });
@@ -68,22 +69,13 @@ export const LoginFirebaseAuth: FC = (props) => {
     }
   });
 
-  useEffect(() => {
-    if (isMountedRef() && user) {
-      if (user.role === 'technician') {
-        router.push('/technician/dashboard');
-      }
-      if (user.role === 'admin') {
-        router.push('/workers');
-      }
-      // const backTo = (router.query.backTo as string) || '/workers';
-      // router.push(backTo);
-    }
-  }, [user]);
-
   const handleGoogleClick = async (): Promise<void> => {
     try {
-      const r = await signInWithGoogle();
+      await signInWithGoogle();
+      if (isMountedRef()) {
+        const backTo = (router.query.backTo as string) || '/';
+        router.push(backTo);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -137,6 +129,32 @@ export const LoginFirebaseAuth: FC = (props) => {
           value={formik.values.password}
           variant="outlined"
         />
+        <Box alignItems="center" display="flex" justifyContent="space-between">
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formik.values.terms}
+                name="terms"
+                color="primary"
+                onChange={formik.handleChange}
+              />
+            }
+            label={
+              <>
+                <Typography variant="body2">
+                  {t('I accept the')}{' '}
+                  <Link href="https://pinglatency.com/terms-and-conditions">
+                    {t('terms and conditions')}
+                  </Link>
+                  .
+                </Typography>
+              </>
+            }
+          />
+          <Link href="/recover-password">
+            <b>{t('Lost password?')}</b>
+          </Link>
+        </Box>
         {Boolean(formik.touched.terms && formik.errors.terms) && (
           <FormHelperText error>{formik.errors.terms}</FormHelperText>
         )}
@@ -153,13 +171,15 @@ export const LoginFirebaseAuth: FC = (props) => {
           fullWidth
           type="submit"
           variant="contained"
-          data-cy="submit"
         >
           {t('Sign in')}
         </Button>
-        {Boolean(formik.touched.submit && formik.errors.submit) && (
-          <FormHelperText error>{formik.errors.submit}</FormHelperText>
-        )}
+        <Typography sx={{ mt: 3, textAlign: 'center' }}>
+          Don't have an account?{' '}
+          <Link href={'/register'} variant={'body1'}>
+            Create one here
+          </Link>
+        </Typography>
       </form>
     </Box>
   );
