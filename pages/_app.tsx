@@ -14,7 +14,7 @@ import { appWithTranslation } from 'next-i18next';
 import { SidebarProvider } from 'src/contexts/SidebarContext';
 import 'src/utils/chart';
 import { Provider as ReduxProvider } from 'react-redux';
-import { store } from 'src/store';
+
 import Loader from 'src/components/Loader';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -53,7 +53,7 @@ function MyApp(props: MyAppProps) {
           content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
       </Head>
-      <ReduxProvider store={store}>
+      {/* <ReduxProvider store={store}> */}
         <SidebarProvider>
           <ThemeProvider>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -84,7 +84,7 @@ function MyApp(props: MyAppProps) {
             </LocalizationProvider>
           </ThemeProvider>
         </SidebarProvider>
-      </ReduxProvider>
+      {/* </ReduxProvider> */}
     </CacheProvider>
   );
 }

@@ -21,7 +21,7 @@ import ExtendedSidebarLayout from 'src/layouts/ExtendedSidebarLayout';
 import Head from 'next/head';
 import PageTitleWrapper from '@/components/PageTitleWrapper';
 import Footer from '@/components/Footer';
-import PageProfileHeader from '@/content/Management/Users/PageProfileHeader';
+import PageProfileHeader from '@/content/Users/PageProfileHeader';
 import { fetchCurrentUser } from '@/services/users';
 import { useRefMounted } from 'src/hooks/useRefMounted';
 

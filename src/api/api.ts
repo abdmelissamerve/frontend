@@ -126,4 +126,22 @@ export class Api {
         }
         return { kind: "ok", data: response.data };
     }
+    async getUsers(data: any): Promise<any> {
+        const accessToken = sessionStorage.getItem("access_token");
+        const response = await this.apisauce.get("users/", data, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
 }

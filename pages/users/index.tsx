@@ -12,7 +12,7 @@ import Head from 'next/head';
 import ExtendedSidebarLayout from 'src/layouts/ExtendedSidebarLayout';
 import { Authenticated } from 'src/components/Authenticated';
 
-import PageHeader from 'src/content/Management/Users/PageHeader';
+import PageHeader from '@/content/Users/PageHeader';
 import Footer from 'src/components/Footer';
 
 import { Grid, Button } from '@mui/material';
@@ -20,7 +20,7 @@ import { useRefMounted } from 'src/hooks/useRefMounted';
 import type { User } from 'src/models/user';
 
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
-import Results from 'src/content/Management/Users/Results';
+import Results from '@/content/Users/Results';
 import { getUsers } from 'src/services/users';
 import { useFetchData } from '@/hooks/useFetch';
 import { AbilityContext } from '@/contexts/Can';
@@ -47,13 +47,7 @@ function ManagementUsers() {
 
   const getUsersList = useCallback(
     (data: any) => {
-      fetchData({
-        search: data.search,
-        role: data.role,
-        is_active: data.is_active,
-        skip: data.skip,
-        limit: data.limit
-      });
+      fetchData({      });
     },
     [isMountedRef]
   );
@@ -141,7 +135,7 @@ function ManagementUsers() {
       >
         <Grid item xs={12}>
           <Results
-            users={data}
+            users={data?.users}
             getUsersList={getUsersList}
             handleTabsChange={handleTabsChange}
             filters={filters}
