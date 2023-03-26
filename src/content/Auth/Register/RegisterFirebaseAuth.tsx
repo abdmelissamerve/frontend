@@ -76,8 +76,7 @@ export const RegisterFirebaseAuth: FC = (props) => {
              await signInWithEmailAndPassword(values.email, values.password);
           }
           if (isMountedRef() && user ) {
-            const backTo = (router.query.backTo as string) || '/users';
-            router.push(backTo);
+            router.push('/phoneVerification');
           }
       } catch (err) {
         console.error(err);
