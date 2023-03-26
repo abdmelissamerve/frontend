@@ -27,7 +27,7 @@ const ImgWrapper = styled('img')(
 
 export const LoginFirebaseAuth: FC = (props) => {
   const { t }: { t: any } = useTranslation();
-  const { signInWithEmailAndPassword, signInWithGoogle } = useAuth() as any;
+  const { signInWithEmailAndPassword } = useAuth() as any;
   const isMountedRef = useRefMounted();
   const router = useRouter();
 
@@ -55,7 +55,7 @@ export const LoginFirebaseAuth: FC = (props) => {
       try {
         await signInWithEmailAndPassword(values.email, values.password);
         if (isMountedRef()) {
-          const backTo = (router.query.backTo as string) || '/';
+          const backTo = (router.query.backTo as string) || '/profile';
           router.push(backTo);
         }
       } catch (err) {
@@ -69,37 +69,9 @@ export const LoginFirebaseAuth: FC = (props) => {
     }
   });
 
-  const handleGoogleClick = async (): Promise<void> => {
-    try {
-      await signInWithGoogle();
-      if (isMountedRef()) {
-        const backTo = (router.query.backTo as string) || '/';
-        router.push(backTo);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   return (
     <Box {...props}>
-      <Button
-        fullWidth
-        onClick={handleGoogleClick}
-        size="large"
-        variant="outlined"
-      >
-        <ImgWrapper alt="Google" src="/static/images/logo/google.svg" />
-        {t('Sign in with Google')}
-      </Button>
-      <Divider
-        sx={{
-          mt: 4,
-          mb: 2
-        }}
-      >
-        {t('or')}
-      </Divider>
       <form noValidate onSubmit={formik.handleSubmit}>
         <TextField
           error={Boolean(formik.touched.email && formik.errors.email)}

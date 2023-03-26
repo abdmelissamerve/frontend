@@ -22,7 +22,7 @@ import { apiInstance } from '@/api-config/api';
 
 
 export const RegisterFirebaseAuth: FC = (props) => {
-  const { createUserWithEmailAndPassword } = useAuth() as any;
+  const { signInWithEmailAndPassword } = useAuth() as any;
   const isMountedRef = useRefMounted();
   const { t }: { t: any } = useTranslation();
   const router = useRouter();
@@ -71,8 +71,12 @@ export const RegisterFirebaseAuth: FC = (props) => {
       };
       try {
           const user = await apiInstance.registerUser(data);
-          if (isMountedRef() && user) {
-            const backTo = (router.query.backTo as string) || '/';
+          console.log(user);
+          if(user){
+             await signInWithEmailAndPassword(values.email, values.password);
+          }
+          if (isMountedRef() && user ) {
+            const backTo = (router.query.backTo as string) || '/users';
             router.push(backTo);
           }
       } catch (err) {

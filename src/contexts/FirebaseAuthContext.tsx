@@ -16,7 +16,6 @@ interface AuthContextValue extends AuthState {
     password: string
   ) => Promise<any>;
   signInWithEmailAndPassword: (email: string, password: string) => Promise<any>;
-  signInWithGoogle: () => Promise<any>;
   logout: () => Promise<void>;
   sendPasswordResetEmail: (email: string) => Promise<any>;
 }
@@ -61,7 +60,6 @@ export const AuthContext = createContext<AuthContextValue>({
   method: 'Firebase',
   createUserWithEmailAndPassword: () => Promise.resolve(),
   signInWithEmailAndPassword: () => Promise.resolve(),
-  signInWithGoogle: () => Promise.resolve(),
   logout: () => Promise.resolve(),
   sendPasswordResetEmail: () => Promise.resolve()
 });
@@ -74,6 +72,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     firebase.auth().onIdTokenChanged((user) => {
       if (user) {
         user.getIdToken().then(async (idToken) => {
+          console.log(idToken);
           let userObj = {
             uid: user.uid,
             email: user.email,
@@ -152,7 +151,6 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         method: 'Firebase',
         createUserWithEmailAndPassword,
         signInWithEmailAndPassword,
-        signInWithGoogle,
         logout,
         sendPasswordResetEmail
       }}
