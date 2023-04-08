@@ -1,15 +1,15 @@
-import {useEffect, useContext} from 'react';
+import { useEffect, useContext } from "react";
 
-import {ListSubheader, alpha, Box, List, styled} from '@mui/material';
-import SidebarMenuItem from './item';
-import {menuItems, technicianMenu, MenuItem} from './items';
-import {useTranslation} from 'react-i18next';
-import {useRouter} from 'next/router';
-import {AbilityContext} from "@/contexts/Can";
+import { ListSubheader, alpha, Box, List, styled } from "@mui/material";
+import SidebarMenuItem from "./item";
+import { menuItems, userMenu, MenuItem } from "./items";
+import { useTranslation } from "react-i18next";
+import { useRouter } from "next/router";
+import { AbilityContext } from "@/contexts/Can";
 import ability from "@/utils/ability";
 
 const MenuWrapper = styled(Box)(
-    ({theme}) => `
+    ({ theme }) => `
   .MuiList-root {
     padding: ${theme.spacing(1)};
 
@@ -30,7 +30,7 @@ const MenuWrapper = styled(Box)(
 );
 
 const SubMenuWrapper = styled(Box)(
-    ({theme}) => `
+    ({ theme }) => `
     .MuiList-root {
 
       .MuiListItem-root {
@@ -59,7 +59,7 @@ const SubMenuWrapper = styled(Box)(
 
           .MuiButton-startIcon,
           .MuiButton-endIcon {
-            transition: ${theme.transitions.create(['color'])};
+            transition: ${theme.transitions.create(["color"])};
 
             .MuiSvgIcon-root {
               font-size: inherit;
@@ -122,10 +122,7 @@ const SubMenuWrapper = styled(Box)(
                 content: ' ';
                 background: ${theme.colors.alpha.trueWhite[100]};
                 opacity: 0;
-                transition: ${theme.transitions.create([
-        'transform',
-        'opacity'
-    ])};
+                transition: ${theme.transitions.create(["transform", "opacity"])};
                 width: 6px;
                 height: 6px;
                 transform: scale(0);
@@ -150,25 +147,17 @@ const SubMenuWrapper = styled(Box)(
 `
 );
 
-const renderSidebarMenuItems = ({
-                                    items,
-                                    path
-                                }: {
-    items: MenuItem[];
-    path: string;
-}): JSX.Element => (
+const renderSidebarMenuItems = ({ items, path }: { items: MenuItem[]; path: string }): JSX.Element => (
     <SubMenuWrapper>
-        <List component="div">
-            {items.reduce((ev, item) => reduceChildRoutes({ev, item, path}), [])}
-        </List>
+        <List component="div">{items.reduce((ev, item) => reduceChildRoutes({ ev, item, path }), [])}</List>
     </SubMenuWrapper>
 );
 
 const reduceChildRoutes = ({
-                               ev,
-                               path,
-                               item
-                           }: {
+    ev,
+    path,
+    item,
+}: {
     ev: JSX.Element[];
     path: string;
     item: MenuItem;
@@ -191,7 +180,7 @@ const reduceChildRoutes = ({
             >
                 {renderSidebarMenuItems({
                     path,
-                    items: item.items
+                    items: item.items,
                 })}
             </SidebarMenuItem>
         );
@@ -213,7 +202,7 @@ const reduceChildRoutes = ({
 };
 
 function SidebarMenu() {
-    const {t}: { t: any } = useTranslation();
+    const { t }: { t: any } = useTranslation();
     const router = useRouter();
     const ability = useContext(AbilityContext);
 
@@ -227,38 +216,43 @@ function SidebarMenu() {
 
     return (
         <>
-            {ability.can('read', 'Admin-Menu') ? menuItems.map((section) => (
-                <MenuWrapper data-cy="menu" key={section.heading}>
-                    <List
-                        component="div"
-                        subheader={
-                            <ListSubheader data-cy="header" component="div" disableSticky>
-                                {t(section.heading)}
-                            </ListSubheader>
-                        }
-                    >
-                        {renderSidebarMenuItems({
-                            items: section.items,
-                            path: router.asPath
-                        })}
-                    </List>
-                </MenuWrapper>
-            )) : ability.can('read', 'Technician-Menu') ? technicianMenu.map((section) => (
-                <MenuWrapper data-cy="menu" key={section.heading}>
-                    <List
-                        component="div"
-                        subheader={
-                            <ListSubheader data-cy="header" component="div" disableSticky>
-                                {t(section.heading)}
-                            </ListSubheader>
-                        }
-                    >
-                        {renderSidebarMenuItems({
-                            items: section.items,
-                            path: router.asPath
-                        })}
-                    </List>
-                </MenuWrapper>  )) : null }
+            {ability.can("read", "Admin-Menu")
+                ? menuItems.map((section) => (
+                      <MenuWrapper data-cy="menu" key={section.heading}>
+                          <List
+                              component="div"
+                              subheader={
+                                  <ListSubheader data-cy="header" component="div" disableSticky>
+                                      {t(section.heading)}
+                                  </ListSubheader>
+                              }
+                          >
+                              {renderSidebarMenuItems({
+                                  items: section.items,
+                                  path: router.asPath,
+                              })}
+                          </List>
+                      </MenuWrapper>
+                  ))
+                : ability.can("read", "Technician-Menu")
+                ? userMenu.map((section) => (
+                      <MenuWrapper data-cy="menu" key={section.heading}>
+                          <List
+                              component="div"
+                              subheader={
+                                  <ListSubheader data-cy="header" component="div" disableSticky>
+                                      {t(section.heading)}
+                                  </ListSubheader>
+                              }
+                          >
+                              {renderSidebarMenuItems({
+                                  items: section.items,
+                                  path: router.asPath,
+                              })}
+                          </List>
+                      </MenuWrapper>
+                  ))
+                : null}
         </>
     );
 }

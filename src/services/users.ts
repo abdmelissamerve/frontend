@@ -24,7 +24,6 @@ async function updateCurrentUser(data: any) {
 
 async function fetchCurrentUser() {
     const response = await apiInstance.fetchCurrentUser();
-    console.log("response", response);
     return response;
 }
 
