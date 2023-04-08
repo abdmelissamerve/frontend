@@ -1,11 +1,10 @@
 {
-  "name": "staff-admintools-io",
+  "name": "csml-final",
   "version": "1.0.0",
-  "title": "Admintools.io",
-  "description": "Admintools.io staff",
+  "title": "CSML Final",
+  "description": "CSML Final",
   "author": {
-    "name": "Admintools.io",
-    "url": "https://admintools.io"
+    "name": "Abdula Melissa"
   },
   "private": true,
   "dependencies": {
@@ -109,8 +108,8 @@
     "lint": "next lint",
     "lint-fix": "next lint --fix",
     "format": "prettier --write \"./**/*.{ts,tsx,js,jsx,json}\" --config ./.prettierrc",
-    "prettier": "prettier --check \"./**/*.{ts,tsx,js,jsx,json}\" --config ./.prettierrc",
-    "deploy:staging": "gcloud app deploy --quiet --project=staging-admintools"
+    "prettier": "prettier --check \"./**/*.{ts,tsx,js,jsx,json}\" --config ./.prettierrc"
+
   },
   "devDependencies": {
     "@testing-library/cypress": "^8.0.3",
