@@ -7,7 +7,11 @@ export default (user) =>
             can("manage", "all");
         }
         if (user.role === "user") {
-            can("read", "Technician-Dashboard");
-            can("read", "Technician-Menu");
+            can("manage", "User-Dashboard");
+            can("manage", "User-Menu");
+            can("manage", "User-Projects");
+            can("manage", "User-Tasks");
+            can("manage", "User-Settings");
+            can("manage", "User-Reports");
         }
     });

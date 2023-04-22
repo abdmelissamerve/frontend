@@ -21,7 +21,7 @@ const menuItems: MenuItems[] = [
         items: [
             {
                 name: "Dashboard",
-                link: "/profile",
+                link: "/dashboard",
             },
             {
                 name: "Users",
@@ -29,24 +29,24 @@ const menuItems: MenuItems[] = [
             },
             {
                 name: "Projects",
-                link: "/users",
+                link: "/projects",
             },
             {
                 name: "Tasks",
-                link: "/users",
+                link: "/tasks",
             },
             {
                 name: "Settings",
-                link: "/users",
+                link: "/settings",
             },
             {
                 name: "Reports",
-                link: "/users",
+                link: "/reports",
             },
-            {
-                name: "Security",
-                link: "/users",
-            },
+            // {
+            //     name: "Security",
+            //     link: "/users",
+            // },
         ],
     },
 ];
@@ -57,27 +57,27 @@ const userMenu: MenuItems[] = [
         items: [
             {
                 name: "Dashboard",
-                link: "/users",
+                link: "/dashboard",
             },
             {
                 name: "Projects",
-                link: "/users",
+                link: "/projects",
             },
             {
                 name: "Tasks",
-                link: "/users",
+                link: "/tasks",
             },
             {
                 name: "Profile",
                 link: "/profile",
             },
-            {
-                name: "Notifications",
-                link: "/users",
-            },
+            // {
+            //     name: "Notifications",
+            //     link: "/users",
+            // },
             {
                 name: "Settings",
-                link: "/users",
+                link: "/settings",
             },
         ],
     },

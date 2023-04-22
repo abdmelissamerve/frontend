@@ -234,7 +234,7 @@ function SidebarMenu() {
                           </List>
                       </MenuWrapper>
                   ))
-                : ability.can("read", "Technician-Menu")
+                : ability.can("read", "User-Menu")
                 ? userMenu.map((section) => (
                       <MenuWrapper data-cy="menu" key={section.heading}>
                           <List

@@ -93,7 +93,7 @@ export class Api {
     }
 
     async getUsers(data: any): Promise<any> {
-        const response = await this.apisauce.get("users/", data, {});
+        const response = await this.apisauce.get("/admin/users/", data, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
             if (problem) return problem;
@@ -107,6 +107,7 @@ export class Api {
     }
 
     async sendVerificationCode(): Promise<any> {
+        console.log("sendVerificationCode");
         const response = await this.apisauce.post(`/auth/sendVerificationCode/`, {}, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);

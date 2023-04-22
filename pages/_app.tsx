@@ -13,8 +13,6 @@ import createEmotionCache from "src/createEmotionCache";
 import { appWithTranslation } from "next-i18next";
 import { SidebarProvider } from "src/contexts/SidebarContext";
 import "src/utils/chart";
-import { Provider as ReduxProvider } from "react-redux";
-
 import Loader from "src/components/Loader";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
