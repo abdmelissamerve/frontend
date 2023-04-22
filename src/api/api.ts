@@ -5,6 +5,7 @@ import type { ApisauceInstance } from "apisauce";
 import type { ApiConfig } from "./api-config";
 import { requestsCallbackMonitor, getCurrentUserAuthorization } from "./monitorAxiosReq";
 import axios from "axios";
+import { identity } from "@casl/ability/dist/types/utils";
 
 /**
  * Manages all requests to the API.
@@ -49,6 +50,7 @@ export class Api {
         this.apisauce.addAsyncRequestTransform(getCurrentUserAuthorization);
     }
 
+    //AUTH
     async registerUser(data: object): Promise<any> {
         const response = await this.apisauce.post(`/auth/register/`, data, {
             headers: { "Content-Type": "application/json" },
@@ -92,20 +94,6 @@ export class Api {
         return { kind: "ok", data: response };
     }
 
-    async getUsers(data: any): Promise<any> {
-        const response = await this.apisauce.get("/admin/users/", data, {});
-        if (!response.ok) {
-            const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
-        }
-        try {
-            return response.data;
-        } catch {
-            return { kind: "server" };
-        }
-    }
-
     async sendVerificationCode(): Promise<any> {
         console.log("sendVerificationCode");
         const response = await this.apisauce.post(`/auth/sendVerificationCode/`, {}, {});
@@ -132,4 +120,307 @@ export class Api {
             return { kind: "server" };
         }
     }
+    /////////////////////////////////////////////////////
+    //ADMIN
+    //users
+    async getUsers(data: any): Promise<any> {
+        const response = await this.apisauce.get("/admin/users/", data, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+    //projects
+    async getAdminProjects(data: any): Promise<any> {
+        const response = await this.apisauce.get(`/admin/projects/`, data, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async addAdminProject(data: any): Promise<any> {
+        const response = await this.apisauce.post(`/admin/projects/`, data, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async getAdminProjectById(id: number): Promise<any> {
+        const response = await this.apisauce.get(`/admin/projects/${id}/`, {}, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async updateAdminProject(id: number, data: any): Promise<any> {
+        const response = await this.apisauce.put(`/admin/projects/${id}/`, data, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async deleteAdminProject(id: number): Promise<any> {
+        const response = await this.apisauce.delete(`/admin/projects/${id}/`, {}, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    //tasks
+    async getAdminTasks(data: any): Promise<any> {
+        const response = await this.apisauce.get(`/admin/tasks/`, data, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async getAdminTaskById(id: number): Promise<any> {
+        const response = await this.apisauce.get(`/admin/tasks/${id}/`, {}, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async addAdminTask(data: any): Promise<any> {
+        const response = await this.apisauce.post(`/admin/tasks/`, data, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async updateAdminTask(id: number, data: any): Promise<any> {
+        const response = await this.apisauce.put(`/admin/tasks/${id}/`, data, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async deleteAdminTask(id: number): Promise<any> {
+        const response = await this.apisauce.delete(`/admin/tasks/${id}/`, {}, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    /////////////////////////////////////////////////////
+    //USER
+    //projects
+    async getUserProjects(data: any): Promise<any> {
+        const response = await this.apisauce.get(`/user/projects/`, data, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async getUserProjectById(id: number): Promise<any> {
+        const response = await this.apisauce.get(`/user/projects/${id}/`, {}, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async addUserProject(data: any): Promise<any> {
+        const response = await this.apisauce.post(`/user/projects/`, data, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async updateUserProject(id: number, data: any): Promise<any> {
+        const response = await this.apisauce.put(`/user/projects/${id}/`, data, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async deleteUserProject(id: number): Promise<any> {
+        const response = await this.apisauce.delete(`/user/projects/${id}/`, {}, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    //tasks
+    async getUserTasks(data: any): Promise<any> {
+        const response = await this.apisauce.get(`/user/tasks/`, data, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async getUserTaskById(id: number): Promise<any> {
+        const response = await this.apisauce.get(`/user/tasks/${id}/`, {}, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async addUserTask(data: any): Promise<any> {
+        const response = await this.apisauce.post(`/user/tasks/`, data, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async updateUserTask(id: number, data: any): Promise<any> {
+        const response = await this.apisauce.put(`/user/tasks/${id}/`, data, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async deleteUserTask(id: number): Promise<any> {
+        const response = await this.apisauce.delete(`/user/tasks/${id}/`, {}, {});
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) return problem;
+            return [];
+        }
+        try {
+            return response.data;
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    /////////////////////////////////////////////////////
 }

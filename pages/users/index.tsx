@@ -8,13 +8,12 @@ import { Authenticated } from "src/components/Authenticated";
 import PageHeader from "@/content/Users/PageHeader";
 import Footer from "src/components/Footer";
 
-import { Grid, Button } from "@mui/material";
+import { Grid } from "@mui/material";
 import { useRefMounted } from "src/hooks/useRefMounted";
-import type { User } from "src/models/user";
 
 import PageTitleWrapper from "src/components/PageTitleWrapper";
 import Results from "@/content/Users/Results";
-import { getUsers } from "src/services/users";
+import { getUsers } from "@/services/admin/users";
 import { useFetchData } from "@/hooks/useFetch";
 import { AbilityContext } from "@/contexts/Can";
 import NotAuthorized from "../status/not_authorized";

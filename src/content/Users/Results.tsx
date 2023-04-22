@@ -32,13 +32,11 @@ import {
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import { useTranslation } from "react-i18next";
-import BulkActions from "./BulkActions";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchTwoToneIcon from "@mui/icons-material/SearchTwoTone";
 import { useSnackbar } from "notistack";
 import LaunchTwoToneIcon from "@mui/icons-material/LaunchTwoTone";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
-import { updateUser, deleteUser, resetPassword } from "@/services/users";
 
 import dynamic from "next/dynamic";
 
@@ -66,19 +64,6 @@ const TabsWrapper = styled(Tabs)(
       }
     }
     `
-);
-
-const AvatarError = styled(Avatar)(
-    ({ theme }) => `
-      background-color: ${theme.colors.error.lighter};
-      color: ${theme.colors.error.main};
-      width: ${theme.spacing(12)};
-      height: ${theme.spacing(12)};
-
-      .MuiSvgIcon-root {
-        font-size: ${theme.typography.pxToRem(45)};
-      }
-`
 );
 
 const ButtonSuccess = styled(Button)(
@@ -128,12 +113,8 @@ const Results: FC<ResultsProps> = ({
     loading,
     error,
 }) => {
-    const [selectedItems, setSelectedusers] = useState<string[]>([]);
     const { t }: { t: any } = useTranslation();
     const { enqueueSnackbar } = useSnackbar();
-    const selectedBulkActions = selectedItems.length > 0;
-
-    const [toggleView, setToggleView] = useState<string | null>("table_view");
     const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
     const [userData, setUserData] = useState(null);
     const [openConfirmResetPassword, setOpenConfirmResetPassword] = useState(false);
@@ -203,7 +184,7 @@ const Results: FC<ResultsProps> = ({
             if (_values.password !== "") {
                 data = { ...data, password: _values.password };
             }
-            await updateUser(data, userData.id);
+            // await updateUser(data, userData.id);
             await getUsersList({
                 search: "",
                 role: filters.role,
@@ -261,27 +242,6 @@ const Results: FC<ResultsProps> = ({
         register_provider: string;
     }
 
-    function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-        if (b[orderBy] < a[orderBy]) {
-            return -1;
-        }
-        if (b[orderBy] > a[orderBy]) {
-            return 1;
-        }
-        return 0;
-    }
-
-    type Order = "asc" | "desc";
-
-    function getComparator<Key extends keyof any>(
-        order: Order,
-        orderBy: Key
-    ): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
-        return order === "desc"
-            ? (a, b) => descendingComparator(a, b, orderBy)
-            : (a, b) => -descendingComparator(a, b, orderBy);
-    }
-
     interface HeadCell {
         id: keyof Data;
         label: string;
@@ -326,36 +286,23 @@ const Results: FC<ResultsProps> = ({
         },
     ];
 
-    const [order, setOrder] = useState<Order>("asc");
-    const [orderBy, setOrderBy] = useState<keyof Data>("id");
-
-    const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Data) => {
-        const isAsc = orderBy === property && order === "asc";
-        setOrder(isAsc ? "desc" : "asc");
-        setOrderBy(property);
-    };
-
-    const createSortHandler = (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
-        handleRequestSort(event, property);
-    };
-
     const handleResetPassword = (user) => {
         setUserId(user);
         setOpenConfirmResetPassword(true);
     };
 
     const sendPasswordResetEmail = () => {
-        resetPassword(userId.email).then(() => {
-            enqueueSnackbar(t("Password reset email sent!"), {
-                variant: "success",
-                anchorOrigin: {
-                    vertical: "top",
-                    horizontal: "right",
-                },
-                TransitionComponent: Zoom,
-            });
-            setOpenConfirmResetPassword(false);
-        });
+        // resetPassword(userId.email).then(() => {
+        //     enqueueSnackbar(t("Password reset email sent!"), {
+        //         variant: "success",
+        //         anchorOrigin: {
+        //             vertical: "top",
+        //             horizontal: "right",
+        //         },
+        //         TransitionComponent: Zoom,
+        //     });
+        //     setOpenConfirmResetPassword(false);
+        // });
     };
 
     const closeConfirmPasswordReset = () => {
@@ -407,170 +354,136 @@ const Results: FC<ResultsProps> = ({
                 </TabsWrapper>
             </Box>
 
-            {toggleView === "table_view" && (
-                <Card>
-                    <Box p={2}>
-                        {!selectedBulkActions && (
-                            <TextField
-                                sx={{
-                                    m: 0,
-                                }}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <SearchTwoToneIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                onChange={handleSearch}
-                                placeholder={t("Search by country, city or data center...")}
-                                size="small"
-                                fullWidth
-                                margin="normal"
-                                variant="outlined"
-                            />
-                        )}
-                        {selectedBulkActions && <BulkActions />}
-                    </Box>
-
-                    <Divider />
-
-                    {!users?.length ? (
-                        <>
-                            <Typography
-                                sx={{
-                                    py: 10,
-                                }}
-                                variant="h3"
-                                fontWeight="normal"
-                                color="text.secondary"
-                                align="center"
-                            >
-                                {loading ? "Loading..." : "There is no data mathing your search criteria."}
-                            </Typography>
-                        </>
-                    ) : (
-                        <>
-                            <TableContainer>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            {headCells.map((headCell) => (
-                                                <TableCell
-                                                    align={headCell.align}
-                                                    key={headCell.id}
-                                                    sortDirection={orderBy === headCell.id ? order : false}
-                                                >
-                                                    {headCell.id == "first_name" ||
-                                                    headCell.id == "last_name" ||
-                                                    headCell.id == "email" ||
-                                                    headCell.id == "register_provider" ||
-                                                    headCell.id == "is_active" ||
-                                                    headCell.id == "role" ||
-                                                    headCell.id == "id" ? (
-                                                        <span style={{ position: "relative" }}>
-                                                            <span style={{ position: "relative" }}>
-                                                                {headCell.label}
-                                                            </span>
-                                                            <TableSortLabel
-                                                                active={orderBy === headCell.id}
-                                                                direction={orderBy === headCell.id ? order : "asc"}
-                                                                onClick={createSortHandler(headCell.id)}
-                                                                sx={{
-                                                                    whiteSpace: "nowrap",
-                                                                    position: "absolute",
-                                                                    bottom: 0,
-                                                                }}
-                                                            />
-                                                        </span>
-                                                    ) : (
-                                                        <Typography>{headCell.label}</Typography>
-                                                    )}
+            <Card>
+                <Box p={2}>
+                    <TextField
+                        sx={{
+                            m: 0,
+                        }}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchTwoToneIcon />
+                                </InputAdornment>
+                            ),
+                        }}
+                        onChange={handleSearch}
+                        placeholder={t("Search by country, city or data center...")}
+                        size="small"
+                        fullWidth
+                        margin="normal"
+                        variant="outlined"
+                    />
+                </Box>
+                <Divider />
+                {!users?.length ? (
+                    <>
+                        <Typography
+                            sx={{
+                                py: 10,
+                            }}
+                            variant="h3"
+                            fontWeight="normal"
+                            color="text.secondary"
+                            align="center"
+                        >
+                            {loading ? "Loading..." : "There is no data mathing your search criteria."}
+                        </Typography>
+                    </>
+                ) : (
+                    <>
+                        <TableContainer>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        {headCells.map((headCell) => (
+                                            <TableCell align={headCell.align} key={headCell.id}>
+                                                <Typography>{headCell.label}</Typography>
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {users?.map((user) => {
+                                        return (
+                                            <TableRow key={user.id}>
+                                                <TableCell align={"center"}>
+                                                    <Typography>{user.id}</Typography>
                                                 </TableCell>
-                                            ))}
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {users?.sort(getComparator(order, orderBy)).map((user) => {
-                                            return (
-                                                <TableRow key={user.id}>
-                                                    <TableCell align={"center"}>
-                                                        <Typography>{user.id}</Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography>{`${user.firstName} ${user.lastName}`}</Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography>{user.email}</Typography>
-                                                    </TableCell>
-                                                    <TableCell align={"center"}>
-                                                        <span>
-                                                            {user.is_active ? (
-                                                                <CircleIcon style={{ color: "#1CD63F" }} />
-                                                            ) : (
-                                                                <CircleIcon style={{ color: "red" }} />
-                                                            )}
-                                                        </span>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography>
-                                                            {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
-                                                        </Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography>{user.register_provider}</Typography>
-                                                    </TableCell>
-                                                    <TableCell align="center">
-                                                        <Typography noWrap>
-                                                            <Tooltip title={t("Edit")} arrow>
-                                                                <IconButton
-                                                                    onClick={() => handleOpenEditUser(user)}
-                                                                    color="primary"
-                                                                    size="small"
-                                                                    color="primary"
-                                                                >
-                                                                    <LaunchTwoToneIcon fontSize="small" />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                            <Tooltip title={t("Reset Password")} arrow>
-                                                                <IconButton
-                                                                    onClick={() => handleResetPassword(user)}
-                                                                    color="primary"
-                                                                >
-                                                                    <LockResetIcon fontSize="small" />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                            <Tooltip title={t("Delete")} arrow>
-                                                                <IconButton
-                                                                    onClick={() => handleConfirmDelete(user)}
-                                                                    color="primary"
-                                                                >
-                                                                    <DeleteTwoToneIcon fontSize="small" />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        </Typography>
-                                                    </TableCell>
-                                                </TableRow>
-                                            );
-                                        })}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                            <Box p={2}>
-                                <TablePagination
-                                    component="div"
-                                    count={-1}
-                                    onPageChange={handlePageChange}
-                                    onRowsPerPageChange={handleLimitChange}
-                                    page={page}
-                                    rowsPerPage={limit}
-                                    rowsPerPageOptions={[25, 50, 100]}
-                                />
-                            </Box>
-                        </>
-                    )}
-                </Card>
-            )}
+                                                <TableCell>
+                                                    <Typography>{`${user.firstName} ${user.lastName}`}</Typography>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Typography>{user.email}</Typography>
+                                                </TableCell>
+                                                <TableCell align={"center"}>
+                                                    <span>
+                                                        {user.is_active ? (
+                                                            <CircleIcon style={{ color: "#1CD63F" }} />
+                                                        ) : (
+                                                            <CircleIcon style={{ color: "red" }} />
+                                                        )}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Typography>
+                                                        {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                                                    </Typography>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Typography>{user.register_provider}</Typography>
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    <Typography noWrap>
+                                                        <Tooltip title={t("Edit")} arrow>
+                                                            <IconButton
+                                                                onClick={() => handleOpenEditUser(user)}
+                                                                color="primary"
+                                                                size="small"
+                                                                color="primary"
+                                                            >
+                                                                <LaunchTwoToneIcon fontSize="small" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                        <Tooltip title={t("Reset Password")} arrow>
+                                                            <IconButton
+                                                                onClick={() => handleResetPassword(user)}
+                                                                color="primary"
+                                                            >
+                                                                <LockResetIcon fontSize="small" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                        <Tooltip title={t("Delete")} arrow>
+                                                            <IconButton
+                                                                onClick={() => handleConfirmDelete(user)}
+                                                                color="primary"
+                                                            >
+                                                                <DeleteTwoToneIcon fontSize="small" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Typography>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <Box p={2}>
+                            <TablePagination
+                                component="div"
+                                count={-1}
+                                onPageChange={handlePageChange}
+                                onRowsPerPageChange={handleLimitChange}
+                                page={page}
+                                rowsPerPage={limit}
+                                rowsPerPageOptions={[5, 15, 30]}
+                            />
+                        </Box>
+                    </>
+                )}
+            </Card>
+
             <DialogWrapper
                 open={openConfirmDelete}
                 maxWidth="sm"
