@@ -22,16 +22,23 @@ export const Authenticated: FC<AuthenticatedProps> = (props) => {
             return;
         }
 
-        setVerified(true);
-        enqueueSnackbar("You are successfully authenticated!", {
-            variant: "success",
-            anchorOrigin: {
-                vertical: "bottom",
-                horizontal: "right",
-            },
-            autoHideDuration: 2000,
-            TransitionComponent: Slide,
-        });
+        if (!auth.isAuthenticated) {
+            router.push({
+                pathname: "/",
+            });
+        } else {
+            setVerified(true);
+
+            enqueueSnackbar("You are successfully authenticated!", {
+                variant: "success",
+                anchorOrigin: {
+                    vertical: "bottom",
+                    horizontal: "right",
+                },
+                autoHideDuration: 2000,
+                TransitionComponent: Slide,
+            });
+        }
     }, [router.isReady, auth.isAuthenticated]);
 
     if (!verified) {

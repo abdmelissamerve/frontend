@@ -19,4 +19,9 @@ async function resetPassword(email: string) {
         });
 }
 
-export { getUsers, resetPassword };
+async function fetchCurrentUser() {
+    const response = await apiInstance.fetchCurrentUser();
+    return response;
+}
+
+export { getUsers, resetPassword, fetchCurrentUser };

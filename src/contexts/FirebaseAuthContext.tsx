@@ -84,6 +84,13 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
                         is_active: false,
                         id: null,
                     };
+                    dispatch({
+                        type: "AUTH_STATE_CHANGED",
+                        payload: {
+                            isAuthenticated: true,
+                            user: userObj,
+                        },
+                    });
                     try {
                         const response = await apiInstance.fetchCurrentUser();
                         console.log(response);
@@ -97,14 +104,6 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
                     } catch (err) {
                         console.error(err);
                     }
-
-                    dispatch({
-                        type: "AUTH_STATE_CHANGED",
-                        payload: {
-                            isAuthenticated: true,
-                            user: userObj,
-                        },
-                    });
                 });
             } else {
                 sessionStorage.removeItem("access_token");
