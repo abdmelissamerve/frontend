@@ -57,7 +57,7 @@ export const RegisterFirebaseAuth: FC = (props) => {
             };
             try {
                 const user = await apiInstance.registerUser(data);
-                console.log(user);
+
                 if (user) {
                     await signInWithEmailAndPassword(values.email, values.password);
                     await sendEmailVerification();
@@ -66,11 +66,10 @@ export const RegisterFirebaseAuth: FC = (props) => {
                     router.push("/emailVerification");
                 }
             } catch (err) {
-                console.error(err);
-
+                console.error("err", err);
                 if (isMountedRef()) {
                     helpers.setStatus({ success: false });
-                    helpers.setErrors({ submit: err.message });
+                    helpers.setErrors({ submit: err?.data?.error });
                     helpers.setSubmitting(false);
                 }
             }
@@ -179,6 +178,9 @@ export const RegisterFirebaseAuth: FC = (props) => {
                         </Typography>
                     }
                 />
+                {Boolean(formik.touched.terms && formik.errors.terms) && (
+                    <FormHelperText error>{formik.errors.terms}</FormHelperText>
+                )}
                 <Button
                     sx={{
                         mt: 3,
