@@ -104,6 +104,13 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
                     } catch (err) {
                         console.error(err);
                     }
+                    dispatch({
+                        type: "AUTH_STATE_CHANGED",
+                        payload: {
+                            isAuthenticated: true,
+                            user: userObj,
+                        },
+                    });
                 });
             } else {
                 sessionStorage.removeItem("access_token");

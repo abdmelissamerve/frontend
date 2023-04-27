@@ -16,10 +16,11 @@ import {
     Typography,
 } from "@mui/material";
 import { useTranslation } from "next-i18next";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import LaunchTwoToneIcon from "@mui/icons-material/LaunchTwoTone";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import SearchTwoToneIcon from "@mui/icons-material/SearchTwoTone";
+import { AbilityContext } from "@/contexts/Can";
 
 const Results = ({
     projects,
@@ -36,11 +37,14 @@ const Results = ({
     error,
 }) => {
     const { t }: { t: any } = useTranslation();
+    const ability = useContext(AbilityContext);
+
     interface Data {
         id: number;
         name: string;
         description: string;
         status: string;
+        user: string;
         dueDate: string;
     }
 
@@ -80,6 +84,11 @@ const Results = ({
         {
             id: "dueDate",
             label: "Due Date",
+            align: "left",
+        },
+        {
+            id: "user",
+            label: "User",
             align: "left",
         },
         {
@@ -135,11 +144,16 @@ const Results = ({
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        {headCells.map((headCell) => (
-                                            <TableCell align={headCell.align} key={headCell.id}>
-                                                <Typography>{headCell.label}</Typography>
-                                            </TableCell>
-                                        ))}
+                                        {headCells.map((headCell) => {
+                                            if (headCell.label === "User" && !ability.can("manage", "all")) {
+                                                return null;
+                                            }
+                                            return (
+                                                <TableCell align={headCell.align} key={headCell.id}>
+                                                    <Typography>{headCell.label}</Typography>
+                                                </TableCell>
+                                            );
+                                        })}
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -161,6 +175,13 @@ const Results = ({
                                                 <TableCell>
                                                     <Typography>{project.dueDate}</Typography>
                                                 </TableCell>
+                                                {ability.can("manage", "all") && (
+                                                    <TableCell>
+                                                        <Typography>
+                                                            {project.user?.firstName} {project.user?.lastName}
+                                                        </Typography>
+                                                    </TableCell>
+                                                )}
                                                 <TableCell align="center">
                                                     <Typography noWrap>
                                                         <Tooltip title={t("Edit")} arrow>

@@ -7,6 +7,10 @@ import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
 import { useSnackbar } from "notistack";
 import dynamic from "next/dynamic";
 
+const AddProjectForm = dynamic(() => import("./AddProjectForm"), {
+    ssr: false,
+});
+
 interface Props {
     getUsersList: Function;
     filters: any;
@@ -62,6 +66,22 @@ const PageHeader: FC<Props> = () => {
                         {t("Fill in the fields below to create and add a new user to the site")}
                     </Typography>
                 </DialogTitle>
+
+                <Dialog fullWidth maxWidth="md" open={open} onClose={() => {}}>
+                    <DialogTitle
+                        sx={{
+                            p: 2,
+                        }}
+                    >
+                        <Typography variant="h4" gutterBottom>
+                            {t("Add a new project")}
+                        </Typography>
+                        <Typography variant="subtitle2">
+                            {t("Fill in the fields below to create a new project.")}
+                        </Typography>
+                    </DialogTitle>
+                    <AddProjectForm />
+                </Dialog>
             </Dialog>
         </>
     );

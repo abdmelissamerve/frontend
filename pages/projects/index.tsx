@@ -10,6 +10,7 @@ import { ChangeEvent, SyntheticEvent, useContext, useEffect, useState } from "re
 import Footer from "@/components/Footer";
 
 import { getProjects } from "@/services/user/projects";
+import { getProjects as getAdminProjects } from "@/services/admin/projects";
 import { useFetchData } from "@/hooks/useFetch";
 
 export default function Projects() {
@@ -23,7 +24,9 @@ export default function Projects() {
     const [limit, setLimit] = useState<number>(25);
 
     const [query, setQuery] = useState<string>("");
-    const { data, loading, error, fetchData } = useFetchData(getProjects);
+    const { data, loading, error, fetchData } = useFetchData(
+        ability.can("manage", "all") ? getAdminProjects : getProjects
+    );
 
     const getProjectsList = (data: any) => {
         fetchData(data);
@@ -31,7 +34,7 @@ export default function Projects() {
 
     useEffect(() => {
         getProjectsList({});
-    }, [filters, limit, query, page]);
+    }, [filters, limit, query, page, ability]);
 
     useEffect(() => {
         if (!data?.length) {
