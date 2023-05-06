@@ -1,8 +1,6 @@
-import { MouseEventHandler } from "react";
 import { FieldArray, Formik, FormikHelpers, FormikValues, ErrorMessage } from "formik";
 import { useTranslation } from "react-i18next";
 import {
-    Paper,
     Grid,
     DialogContent,
     TextField,
@@ -11,36 +9,82 @@ import {
     useTheme,
     DialogActions,
     Typography,
-    Checkbox,
-    FormControlLabel,
     Box,
+    MenuItem,
+    FormControl,
+    InputLabel,
+    Select,
+    Zoom,
 } from "@mui/material";
 import * as Yup from "yup";
 import "react-quill/dist/quill.snow.css";
-import AddCircleIcon from "@mui/icons-material/Add";
+import DatePicker from "@mui/lab/DatePicker";
+import { addProject } from "@/services/user/projects";
+import { addProject as addAminProject } from "@/services/admin/projects";
+import { useRefMounted } from "@/hooks/useRefMounted";
+import { useSnackbar } from "notistack";
 
 export default function AddProjectForm(props) {
-    const { initialData, onSubmit, loading, error, handleClose }: any = props;
+    const { getProjectsList }: any = props;
+    const { enqueueSnackbar } = useSnackbar();
+    const { initialData, handleClose }: any = props;
+    const isMountedRef = useRefMounted();
     const theme = useTheme();
     const { t }: { t: any } = useTranslation();
     const initialValues = {
         name: "",
         description: "",
         dueDate: "",
-        status: "",
+        status: "Open",
         ...initialData,
     };
 
     const validationSchema = Yup.object().shape({
         name: Yup.string().max(255).required(t("The name field is required")),
         description: Yup.string().max(255).required(t("The description field is required")),
+        dueDate: Yup.string().max(255).required(t("The due date field is required")),
+        status: Yup.string().max(255).required(t("The status field is required")),
     });
+
+    const onSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>): Promise<void> => {
+        const data = {
+            name: values.name,
+            description: values.description,
+            dueDate: values.dueDate,
+            status: values.status,
+        };
+
+        try {
+            await addProject(data);
+            helpers.setSubmitting(true);
+            helpers.setErrors({});
+            helpers.setStatus({ success: true });
+            helpers.setTouched({});
+            handleClose();
+            getProjectsList();
+            if (isMountedRef()) {
+                enqueueSnackbar(t("Project added successfully"), {
+                    variant: "success",
+                    anchorOrigin: {
+                        vertical: "top",
+                        horizontal: "right",
+                    },
+                    TransitionComponent: Zoom,
+                    autoHideDuration: 2000,
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            helpers.setStatus({ success: false });
+            helpers.setErrors({ submit: error.message });
+        }
+    };
 
     return (
         <Formik
             enableReinitialize
             initialValues={initialValues}
-            onSubmit={() => {}}
+            onSubmit={onSubmit}
             validationSchema={validationSchema}
         >
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, setFieldValue, touched, values }) => (
@@ -136,16 +180,23 @@ export default function AddProjectForm(props) {
                                 sm={8}
                                 md={9}
                             >
-                                <TextField
-                                    error={Boolean(touched.dueDate && errors.dueDate)}
-                                    fullWidth
-                                    helperText={touched.dueDate && errors.dueDate}
-                                    label={t("Due Date")}
-                                    name="dueDate"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
+                                <DatePicker
+                                    inputFormat="dd/MM/yyyy"
                                     value={values.dueDate}
-                                    variant="outlined"
+                                    onChange={(value) => {
+                                        setFieldValue("dueDate", value);
+                                    }}
+                                    label={"Due Date"}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="outlined"
+                                            fullWidth
+                                            name="dueDate"
+                                            error={Boolean(touched.dueDate && errors.dueDate)}
+                                            helperText={touched.dueDate && errors.dueDate}
+                                        />
+                                    )}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4} md={3} justifyContent="flex-end" textAlign={{ sm: "right" }}>
@@ -168,17 +219,20 @@ export default function AddProjectForm(props) {
                                 sm={8}
                                 md={9}
                             >
-                                <TextField
-                                    error={Boolean(touched.status && errors.status)}
-                                    fullWidth
-                                    helperText={touched.status && errors.status}
-                                    label={t("Status")}
-                                    name="status"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.status}
-                                    variant="outlined"
-                                />
+                                <FormControl fullWidth variant="outlined">
+                                    <InputLabel>{t("Status")}</InputLabel>
+                                    <Select
+                                        value={values.status}
+                                        onChange={(e) => {
+                                            setFieldValue("status", e.target.value);
+                                        }}
+                                        label={t("Status")}
+                                    >
+                                        <MenuItem value={"Open"}>Open</MenuItem>
+                                        <MenuItem value={"In Progress"}>In Progress</MenuItem>
+                                        <MenuItem value={"Completed"}>Completed</MenuItem>
+                                    </Select>
+                                </FormControl>
                             </Grid>
 
                             <Grid item xs={12}>

@@ -86,7 +86,7 @@ export default function Projects() {
                 <title>Projects</title>
             </Head>
             <PageTitleWrapper>
-                <PageHeader />
+                <PageHeader getProjectsList={getProjectsList} />
             </PageTitleWrapper>
             <Grid sx={{ px: 4 }} container direction="row" justifyContent="center" alignItems="stretch" spacing={3}>
                 <Grid item xs={12}>

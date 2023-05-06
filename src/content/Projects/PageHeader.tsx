@@ -12,12 +12,12 @@ const AddProjectForm = dynamic(() => import("./AddProjectForm"), {
 });
 
 interface Props {
-    getUsersList: Function;
+    getProjectsList: Function;
     filters: any;
     limit: any;
 }
 
-const PageHeader: FC<Props> = () => {
+const PageHeader: FC<Props> = ({ getProjectsList, filters, limit }: Props) => {
     const { t }: { t: any } = useTranslation();
     const [open, setOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -80,7 +80,7 @@ const PageHeader: FC<Props> = () => {
                             {t("Fill in the fields below to create a new project.")}
                         </Typography>
                     </DialogTitle>
-                    <AddProjectForm handleClose={handleCreateProjectClose} />
+                    <AddProjectForm handleClose={handleCreateProjectClose} getProjectsList={getProjectsList} />
                 </Dialog>
             </Dialog>
         </>
