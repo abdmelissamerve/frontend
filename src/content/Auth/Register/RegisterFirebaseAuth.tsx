@@ -25,6 +25,7 @@ export const RegisterFirebaseAuth: FC = (props) => {
     const isMountedRef = useRefMounted();
     const { t }: { t: any } = useTranslation();
     const router = useRouter();
+    const phoneRegExp = /^0((\([0-9]{2,3}\))|([0-9]{1,3}))*?[0-9]{3,4}?[0-9]{3,4}?$/;
 
     const formik = useFormik({
         initialValues: {
@@ -32,19 +33,35 @@ export const RegisterFirebaseAuth: FC = (props) => {
             lastName: "",
             email: "",
             password: "",
+            confirmPassword: "",
             phoneNumber: "",
             terms: true,
             submit: null,
         },
         validationSchema: Yup.object({
-            firstName: Yup.string().max(255).required(t("The first name field is required")),
-            lastName: Yup.string().max(255).required(t("The last name field is required")),
+            firstName: Yup.string()
+                .matches(/^[a-zA-Z\s]+$/, "The first name can only contain letters")
+                .min(2)
+                .max(50)
+                .required(t("The first name field is required")),
+            lastName: Yup.string()
+                .matches(/^[a-zA-Z\s]+$/, "The first name can only contain letters")
+                .min(2)
+                .max(50)
+                .required(t("The first name field is required")),
             email: Yup.string()
-                .email(t("The email address provided should be valid"))
+                .email(t("The email address provided is invalid"))
                 .max(255)
                 .required(t("The email field is required")),
             password: Yup.string().min(8).max(255).required(t("The password field is required")),
-            phoneNumber: Yup.string().min(10).max(10).required(t("The phone number field is required")),
+            confirmPassword: Yup.string()
+                .oneOf([Yup.ref("password"), null], t("Passwords must match"))
+                .required(t("The password confirmation field is required")),
+            phoneNumber: Yup.string()
+                .min(10)
+                .max(10)
+                .matches(phoneRegExp, "Phone number is not valid")
+                .required(t("The phone number field is required")),
             terms: Yup.boolean().oneOf([true], t("You must agree to our terms and conditions")),
         }),
         onSubmit: async (values, helpers): Promise<void> => {
@@ -144,6 +161,23 @@ export const RegisterFirebaseAuth: FC = (props) => {
                             variant="outlined"
                         />
                     </Grid>
+                    <Grid item xs={12} lg={12} style={{ paddingTop: 0 }}>
+                        <TextField
+                            error={Boolean(formik.touched.confirmPassword && formik.errors.confirmPassword)}
+                            fullWidth
+                            helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
+                            label={t("Confirm Password")}
+                            placeholder={t("Re-enter your password here...")}
+                            margin="normal"
+                            name="confirmPassword"
+                            onBlur={formik.handleBlur}
+                            onChange={formik.handleChange}
+                            type="password"
+                            value={formik.values.confirmPassword}
+                            variant="outlined"
+                        />
+                    </Grid>
+
                     <Grid item xs={12} lg={12} style={{ paddingTop: 0 }}>
                         <TextField
                             error={Boolean(formik.touched.phoneNumber && formik.errors.phoneNumber)}
