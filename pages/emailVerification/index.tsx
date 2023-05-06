@@ -49,7 +49,6 @@ function EmailVerification() {
             if (oobCode && user.emailVerified === false) {
                 await checkEmailVerification();
             }
-            console.log("USER", user);
             if (isMountedRef() && user.emailVerified === true) {
                 enqueueSnackbar(t("Email verified successfully"), {
                     variant: "success",

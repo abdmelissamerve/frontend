@@ -34,33 +34,9 @@ function PhoneVerification() {
     const router = useRouter();
     const { t }: { t: any } = useTranslation();
 
-    // const verifyCode = async (code: number) => {
-    //     try {
-    //         const response = await apiInstance.verifyCode(code);
-    //         if (isMountedRef() && response.data.result === true) {
-    //             enqueueSnackbar(t("Phone verified successfully"), {
-    //                 variant: "success",
-    //                 anchorOrigin: {
-    //                     vertical: "top",
-    //                     horizontal: "right",
-    //                 },
-    //                 TransitionComponent: Zoom,
-    //                 autoHideDuration: 2000,
-    //             });
-    //             router.push("/profile");
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
-
-    // const codeFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     setCode(event.target.value);
-    // };
-
     const formik = useFormik({
         initialValues: {
-            code: 0,
+            code: "",
             submit: null,
         },
         validationSchema: Yup.object({
@@ -71,7 +47,6 @@ function PhoneVerification() {
         onSubmit: async (values, helpers): Promise<void> => {
             try {
                 const response = await apiInstance.verifyCode(values.code);
-                console.log("response", response);
                 if (isMountedRef() && response.data.result === true) {
                     enqueueSnackbar(t("Phone verified successfully"), {
                         variant: "success",

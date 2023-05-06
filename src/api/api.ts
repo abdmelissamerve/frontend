@@ -95,7 +95,6 @@ export class Api {
     }
 
     async sendVerificationCode(): Promise<any> {
-        console.log("sendVerificationCode");
         const response = await this.apisauce.post(`/auth/sendVerificationCode/`, {}, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
@@ -108,7 +107,7 @@ export class Api {
         }
     }
 
-    async verifyCode(code: number): Promise<any> {
+    async verifyCode(code: string): Promise<any> {
         const response = await this.apisauce.post(`/auth/verifyCode/`, { code: code }, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
