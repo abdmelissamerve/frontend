@@ -79,7 +79,8 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
                         email: user.email,
                         photo_url: user.photoURL,
                         name: user.displayName,
-                        email_verified: user.emailVerified,
+                        emailVerified: user.emailVerified,
+                        isPhoneVerified: false,
                         role: "user",
                         is_active: false,
                         id: null,
@@ -100,6 +101,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
                             photo_url: response.data.user.photo_URL ? response.data.user.photo_URL : user.photoURL,
                             name: response.data.user.firstName + " " + response.data.user.lastName,
                             role: response.data.user.role,
+                            isPhoneVerified: response.data.user.isPhoneVerified,
                         };
                     } catch (err) {
                         console.error(err);

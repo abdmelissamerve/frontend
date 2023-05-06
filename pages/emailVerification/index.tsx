@@ -46,10 +46,11 @@ function EmailVerification() {
         };
 
         const handleVerification = async () => {
-            if (oobCode && user.email_verified === false) {
+            if (oobCode && user.emailVerified === false) {
                 await checkEmailVerification();
             }
-            if (isMountedRef() && user.email_verified === true) {
+            console.log("USER", user);
+            if (isMountedRef() && user.emailVerified === true) {
                 enqueueSnackbar(t("Email verified successfully"), {
                     variant: "success",
                     anchorOrigin: {
@@ -65,7 +66,7 @@ function EmailVerification() {
         };
 
         handleVerification();
-    }, [oobCode, router, user]);
+    }, [oobCode, router, user.emailVerified, user.isPhoneVerified]);
 
     return (
         <>
