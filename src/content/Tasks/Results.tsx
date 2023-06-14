@@ -23,7 +23,7 @@ import SearchTwoToneIcon from "@mui/icons-material/SearchTwoTone";
 import { AbilityContext } from "@/contexts/Can";
 
 const Results = ({
-    projects,
+    tasks,
     getProjectsList,
     filters,
     handleTabsChange,
@@ -124,7 +124,7 @@ const Results = ({
 
                 <Divider />
 
-                {!projects?.length ? (
+                {!tasks?.length ? (
                     <>
                         <Typography
                             sx={{
@@ -157,7 +157,7 @@ const Results = ({
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {projects?.map((project) => {
+                                    {tasks?.map((project) => {
                                         return (
                                             <TableRow key={project.id}>
                                                 <TableCell align={"center"}>

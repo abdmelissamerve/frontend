@@ -19,7 +19,7 @@ import * as Yup from "yup";
 import "react-quill/dist/quill.snow.css";
 import AddCircleIcon from "@mui/icons-material/Add";
 
-export default function AddProjectForm(props) {
+export default function AddTaskForm(props) {
     const { initialData, onSubmit, loading, error, handleClose }: any = props;
     const theme = useTheme();
     const { t }: { t: any } = useTranslation();

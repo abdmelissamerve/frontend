@@ -36,17 +36,9 @@ const menuItems: MenuItems[] = [
                 link: "/tasks",
             },
             {
-                name: "Settings",
-                link: "/settings",
+                name: "Profile",
+                link: "/profile",
             },
-            {
-                name: "Reports",
-                link: "/reports",
-            },
-            // {
-            //     name: "Security",
-            //     link: "/users",
-            // },
         ],
     },
 ];
@@ -70,14 +62,6 @@ const userMenu: MenuItems[] = [
             {
                 name: "Profile",
                 link: "/profile",
-            },
-            // {
-            //     name: "Notifications",
-            //     link: "/users",
-            // },
-            {
-                name: "Settings",
-                link: "/settings",
             },
         ],
     },

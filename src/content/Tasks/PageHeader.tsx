@@ -2,12 +2,12 @@ import { useState, FC } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { Grid, Dialog, DialogTitle, Zoom, Typography, Button } from "@mui/material";
+import { Grid, Dialog, DialogTitle, Zoom, Typography, Button, Select, MenuItem } from "@mui/material";
 import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
 import { useSnackbar } from "notistack";
 import dynamic from "next/dynamic";
 
-const AddProjectForm = dynamic(() => import("./AddProjectForm"), {
+const AddTaskForm = dynamic(() => import("./AddTaskForm"), {
     ssr: false,
 });
 
@@ -15,9 +15,12 @@ interface Props {
     getUsersList: Function;
     filters: any;
     limit: any;
+    handleProjectChange: Function;
+    projects: any;
+    selectedProjectId: any;
 }
 
-const PageHeader: FC<Props> = () => {
+const PageHeader: FC<Props> = ({ getUsersList, filters, limit, handleProjectChange, projects, selectedProjectId }) => {
     const { t }: { t: any } = useTranslation();
     const [open, setOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -35,10 +38,32 @@ const PageHeader: FC<Props> = () => {
     return (
         <>
             <Grid container justifyContent="space-between" alignItems="center">
-                <Grid item>
+                <Grid item sx={{ display: "flex" }}>
                     <Typography variant="h3" component="h3" gutterBottom>
-                        {t("Projects")}
+                        {t("Tasks")}
                     </Typography>
+                    <Grid
+                        item
+                        sx={{
+                            mx: 2,
+                            my: "auto",
+                        }}
+                    >
+                        <Select
+                            value={selectedProjectId}
+                            onChange={handleProjectChange}
+                            sx={{
+                                minWidth: 200,
+                                height: 40,
+                            }}
+                        >
+                            {projects.map((project) => (
+                                <MenuItem key={project.id} value={project.id}>
+                                    {project.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Grid>
                 </Grid>
                 <Grid item>
                     <Button
@@ -49,7 +74,7 @@ const PageHeader: FC<Props> = () => {
                         variant="contained"
                         startIcon={<AddTwoToneIcon fontSize="small" />}
                     >
-                        {t("Create project")}
+                        {t("Create task")}
                     </Button>
                 </Grid>
             </Grid>
@@ -60,7 +85,7 @@ const PageHeader: FC<Props> = () => {
                     }}
                 >
                     <Typography variant="h4" gutterBottom>
-                        {t("Add new project")}
+                        {t("Add new task")}
                     </Typography>
                     <Typography variant="subtitle2">
                         {t("Fill in the fields below to create and add a new user to the site")}
@@ -74,13 +99,13 @@ const PageHeader: FC<Props> = () => {
                         }}
                     >
                         <Typography variant="h4" gutterBottom>
-                            {t("Add a new project")}
+                            {t("Add a new task")}
                         </Typography>
                         <Typography variant="subtitle2">
                             {t("Fill in the fields below to create a new project.")}
                         </Typography>
                     </DialogTitle>
-                    <AddProjectForm handleClose={handleCreateProjectClose} />
+                    <AddTaskForm handleClose={handleCreateProjectClose} />
                 </Dialog>
             </Dialog>
         </>
