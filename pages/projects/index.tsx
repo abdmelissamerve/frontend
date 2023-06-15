@@ -12,6 +12,7 @@ import Footer from "@/components/Footer";
 import { getProjects } from "@/services/user/projects";
 import { getProjects as getAdminProjects } from "@/services/admin/projects";
 import { useFetchData } from "@/hooks/useFetch";
+import { getUsers } from "@/services/admin/users";
 
 export default function Projects() {
     const ability = useContext(AbilityContext);
@@ -28,12 +29,24 @@ export default function Projects() {
         ability.can("manage", "all") ? getAdminProjects : getProjects
     );
 
+    const {
+        data: usersData,
+        loading: usersLoading,
+        error: usersError,
+        fetchData: fetchUsersData,
+    } = useFetchData(ability.can("manage", "all") ? getUsers : null);
+
+    const getUsersList = (data: any) => {
+        fetchUsersData(data);
+    };
+
     const getProjectsList = (data: any) => {
         fetchData(data);
     };
 
     useEffect(() => {
         getProjectsList({});
+        getUsersList({});
     }, [filters, limit, query, page, ability]);
 
     useEffect(() => {
@@ -86,7 +99,7 @@ export default function Projects() {
                 <title>Projects</title>
             </Head>
             <PageTitleWrapper>
-                <PageHeader getProjectsList={getProjectsList} />
+                <PageHeader getProjectsList={getProjectsList} usersList={usersData?.users} />
             </PageTitleWrapper>
             <Grid sx={{ px: 4 }} container direction="row" justifyContent="center" alignItems="stretch" spacing={3}>
                 <Grid item xs={12}>
@@ -107,21 +120,6 @@ export default function Projects() {
                 </Grid>
             </Grid>
             <Footer />
-            {/* <Box
-                sx={{
-                    height: "100vh",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            >
-                {ability.can("manage", "all") ? (
-                    <Typography variant="h1">Admin Projects</Typography>
-                ) : ability.can("read", "User-Projects") ? (
-                    <Typography variant="h1">User Projects</Typography>
-                ) : null}
-            </Box> */}
         </>
     );
 }

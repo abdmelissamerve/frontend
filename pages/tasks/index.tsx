@@ -14,6 +14,7 @@ import { getTasks as getAdminTasks } from "@/services/admin/tasks";
 
 import { getProjects } from "@/services/user/projects";
 import { getProjects as getAdminProjects } from "@/services/admin/projects";
+import { getUsers } from "@/services/admin/users";
 
 import { useFetchData } from "@/hooks/useFetch";
 
@@ -21,6 +22,7 @@ export default function Tasks() {
     const ability = useContext(AbilityContext);
     const [projects, setProjects] = useState([]);
     const [selectedProjectId, setSelectedProjectId] = useState("");
+    const [selectedProjectName, setSelectedProjectName] = useState("");
 
     const [filters, setFilters] = useState({
         role: "",
@@ -38,6 +40,13 @@ export default function Tasks() {
         fetchData: fetchProjectsData,
     } = useFetchData(ability.can("manage", "all") ? getAdminProjects : getProjects);
 
+    const {
+        data: usersData,
+        loading: usersLoading,
+        error: usersError,
+        fetchData: fetchUsersData,
+    } = useFetchData(ability.can("manage", "all") ? getUsers : null);
+
     const getTasksList = (data: any) => {
         fetchData(data);
     };
@@ -46,21 +55,29 @@ export default function Tasks() {
         fetchProjectsData(data);
     };
 
+    const fetchUsersList = (data: any) => {
+        fetchUsersData(data);
+    };
+
     useEffect(() => {
         getTasksList({
             projectId: selectedProjectId,
         });
         fetchProjectsList({});
+        fetchUsersList({});
+        console.log("usersData", usersData);
     }, [filters, limit, query, page, ability, selectedProjectId]);
 
     useEffect(() => {
-        if (projectData && projectData.projects.length > 0) {
+        if (projectData) {
             setProjects(projectData.projects);
             if (!selectedProjectId) {
                 setSelectedProjectId(projectData.projects[0].id);
+                setSelectedProjectName(projectData.projects[0].name);
             }
         }
-    }, [projectData, selectedProjectId]);
+        console.log("projectData", projectData);
+    }, [projectData, selectedProjectId, selectedProjectName]);
 
     useEffect(() => {
         if (!data?.length) {
@@ -75,6 +92,7 @@ export default function Tasks() {
     }, [data]);
 
     const handleProjectChange = (event) => {
+        setSelectedProjectName(projectData.projects.find((project) => project.id == event.target.value).name);
         setSelectedProjectId(event.target.value);
     };
 
@@ -127,6 +145,8 @@ export default function Tasks() {
                     handleProjectChange={handleProjectChange}
                     projects={projects}
                     selectedProjectId={selectedProjectId}
+                    selectedProjectName={selectedProjectName}
+                    usersList={usersData}
                 />
             </PageTitleWrapper>
             <Grid sx={{ px: 4 }} container direction="row" justifyContent="center" alignItems="stretch" spacing={3}>
@@ -144,25 +164,11 @@ export default function Tasks() {
                         handleQueryChange={handleQueryChange}
                         loading={loading}
                         error={error}
+                        selectedProjectId={selectedProjectId}
                     />
                 </Grid>
             </Grid>
             <Footer />
-            {/* <Box
-                sx={{
-                    height: "100vh",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            >
-                {ability.can("manage", "all") ? (
-                    <Typography variant="h1">Admin Tasks</Typography>
-                ) : ability.can("read", "User-Tasks") ? (
-                    <Typography variant="h1">User Tasks</Typography>
-                ) : null}
-            </Box> */}
         </>
     );
 }

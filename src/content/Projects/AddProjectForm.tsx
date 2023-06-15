@@ -23,8 +23,11 @@ import { addProject } from "@/services/user/projects";
 import { addProject as addAminProject } from "@/services/admin/projects";
 import { useRefMounted } from "@/hooks/useRefMounted";
 import { useSnackbar } from "notistack";
+import { AbilityContext } from "@/contexts/Can";
+import { useContext } from "react";
 
 export default function AddProjectForm(props) {
+    const ability = useContext(AbilityContext);
     const { getProjectsList }: any = props;
     const { enqueueSnackbar } = useSnackbar();
     const { initialData, handleClose }: any = props;
@@ -35,6 +38,7 @@ export default function AddProjectForm(props) {
         name: "",
         description: "",
         dueDate: "",
+        assigne: "",
         status: "Open",
         ...initialData,
     };
@@ -44,6 +48,9 @@ export default function AddProjectForm(props) {
         description: Yup.string().max(255).required(t("The description field is required")),
         dueDate: Yup.string().max(255).required(t("The due date field is required")),
         status: Yup.string().max(255).required(t("The status field is required")),
+        assigne: ability.can("manage", "all")
+            ? Yup.string().max(255).required(t("The assigne field is required"))
+            : null,
     });
 
     const onSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>): Promise<void> => {
@@ -55,7 +62,12 @@ export default function AddProjectForm(props) {
         };
 
         try {
-            await addProject(data);
+            if (ability.can("manage", "all")) {
+                data["assigne"] = values.assigne;
+                await addAminProject(data);
+            } else {
+                await addProject(data);
+            }
             helpers.setSubmitting(true);
             helpers.setErrors({});
             helpers.setStatus({ success: true });
@@ -74,6 +86,17 @@ export default function AddProjectForm(props) {
                 });
             }
         } catch (error) {
+            if (isMountedRef()) {
+                enqueueSnackbar(t("Project could not be added"), {
+                    variant: "error",
+                    anchorOrigin: {
+                        vertical: "top",
+                        horizontal: "right",
+                    },
+                    TransitionComponent: Zoom,
+                    autoHideDuration: 2000,
+                });
+            }
             console.error(error);
             helpers.setStatus({ success: false });
             helpers.setErrors({ submit: error.message });
@@ -235,6 +258,55 @@ export default function AddProjectForm(props) {
                                 </FormControl>
                             </Grid>
 
+                            {ability.can("manage", "all") ? (
+                                <>
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        sm={4}
+                                        md={3}
+                                        justifyContent="flex-end"
+                                        textAlign={{ sm: "right" }}
+                                    >
+                                        <Box
+                                            pr={3}
+                                            sx={{
+                                                pt: `${theme.spacing(2)}`,
+                                            }}
+                                            alignSelf="center"
+                                        >
+                                            <b>{t("Assign to")}:</b>
+                                        </Box>
+                                    </Grid>
+                                    <Grid
+                                        sx={{
+                                            mb: `${theme.spacing(3)}`,
+                                        }}
+                                        item
+                                        xs={12}
+                                        sm={8}
+                                        md={9}
+                                    >
+                                        <FormControl fullWidth variant="outlined">
+                                            <InputLabel>{t("Users")}</InputLabel>
+                                            <Select
+                                                value={values.assigne}
+                                                onChange={(e) => {
+                                                    console.log("e.target.value", e.target.value);
+                                                    setFieldValue("assigne", e.target.value);
+                                                }}
+                                                label={t("Users")}
+                                            >
+                                                {props?.usersList?.map((user) => (
+                                                    <MenuItem key={user.id} value={user.id}>
+                                                        {user.firstName + " " + user.lastName}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                </>
+                            ) : null}
                             <Grid item xs={12}>
                                 <Typography align="center" marginTop={2} color="error" variant="h4">
                                     {errors.submit}

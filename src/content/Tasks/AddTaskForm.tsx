@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useContext } from "react";
 import { FieldArray, Formik, FormikHelpers, FormikValues, ErrorMessage } from "formik";
 import { useTranslation } from "react-i18next";
 import {
@@ -14,33 +14,109 @@ import {
     Checkbox,
     FormControlLabel,
     Box,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    Zoom,
 } from "@mui/material";
 import * as Yup from "yup";
 import "react-quill/dist/quill.snow.css";
 import AddCircleIcon from "@mui/icons-material/Add";
+import DatePicker from "@mui/lab/DatePicker";
+import { addTask as addTaskAsAdmin } from "@/services/admin/tasks";
+
+import { addTask } from "@/services/user/tasks";
+import { AbilityContext } from "@/contexts/Can";
+import { useRefMounted } from "@/hooks/useRefMounted";
+import { useSnackbar } from "notistack";
 
 export default function AddTaskForm(props) {
-    const { initialData, onSubmit, loading, error, handleClose }: any = props;
+    const { enqueueSnackbar } = useSnackbar();
+    const ability = useContext(AbilityContext);
+    const { initialData, loading, error, handleClose }: any = props;
+    const isMountedRef = useRefMounted();
     const theme = useTheme();
     const { t }: { t: any } = useTranslation();
+    console.log("props", props.usersList);
+
     const initialValues = {
         name: "",
         description: "",
         dueDate: "",
-        status: "",
+        assigne: "",
+        status: "Open",
         ...initialData,
     };
 
     const validationSchema = Yup.object().shape({
         name: Yup.string().max(255).required(t("The name field is required")),
         description: Yup.string().max(255).required(t("The description field is required")),
+        dueDate: Yup.string().max(255).required(t("The due date field is required")),
+        status: Yup.string().max(255).required(t("The status field is required")),
+        assigne: ability.can("manage", "all")
+            ? Yup.string().max(255).required(t("The assigne field is required"))
+            : null,
     });
+
+    const onSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>): Promise<void> => {
+        const data = {
+            name: values.name,
+            description: values.description,
+            dueDate: values.dueDate,
+            status: values.status,
+            project: props.selectedProjectId,
+        };
+
+        try {
+            if (ability.can("manage", "all")) {
+                data["assignedTo"] = values.assigne;
+                await addTaskAsAdmin(data);
+            } else {
+                await addTask(data);
+            }
+            helpers.setSubmitting(true);
+            helpers.setErrors({});
+            helpers.setStatus({ success: true });
+            helpers.setTouched({});
+            handleClose();
+            props.getTasksList({
+                projectId: props.selectedProjectId,
+            });
+            if (isMountedRef()) {
+                enqueueSnackbar(t("Task added successfully"), {
+                    variant: "success",
+                    anchorOrigin: {
+                        vertical: "top",
+                        horizontal: "right",
+                    },
+                    TransitionComponent: Zoom,
+                    autoHideDuration: 2000,
+                });
+            }
+        } catch (error) {
+            if (isMountedRef()) {
+                enqueueSnackbar(t("Task could not be added"), {
+                    variant: "error",
+                    anchorOrigin: {
+                        vertical: "top",
+                        horizontal: "right",
+                    },
+                    TransitionComponent: Zoom,
+                    autoHideDuration: 2000,
+                });
+            }
+            console.error(error);
+            helpers.setStatus({ success: false });
+            helpers.setErrors({ submit: error.message });
+        }
+    };
 
     return (
         <Formik
             enableReinitialize
             initialValues={initialValues}
-            onSubmit={() => {}}
+            onSubmit={onSubmit}
             validationSchema={validationSchema}
         >
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, setFieldValue, touched, values }) => (
@@ -136,16 +212,23 @@ export default function AddTaskForm(props) {
                                 sm={8}
                                 md={9}
                             >
-                                <TextField
-                                    error={Boolean(touched.dueDate && errors.dueDate)}
-                                    fullWidth
-                                    helperText={touched.dueDate && errors.dueDate}
-                                    label={t("Due Date")}
-                                    name="dueDate"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
+                                <DatePicker
+                                    inputFormat="dd/MM/yyyy"
                                     value={values.dueDate}
-                                    variant="outlined"
+                                    onChange={(value) => {
+                                        setFieldValue("dueDate", value);
+                                    }}
+                                    label={"Due Date"}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="outlined"
+                                            fullWidth
+                                            name="dueDate"
+                                            error={Boolean(touched.dueDate && errors.dueDate)}
+                                            helperText={touched.dueDate && errors.dueDate}
+                                        />
+                                    )}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={4} md={3} justifyContent="flex-end" textAlign={{ sm: "right" }}>
@@ -168,19 +251,71 @@ export default function AddTaskForm(props) {
                                 sm={8}
                                 md={9}
                             >
-                                <TextField
-                                    error={Boolean(touched.status && errors.status)}
-                                    fullWidth
-                                    helperText={touched.status && errors.status}
-                                    label={t("Status")}
-                                    name="status"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.status}
-                                    variant="outlined"
-                                />
+                                <FormControl fullWidth variant="outlined">
+                                    <InputLabel>{t("Status")}</InputLabel>
+                                    <Select
+                                        value={values.status}
+                                        onChange={(e) => {
+                                            setFieldValue("status", e.target.value);
+                                        }}
+                                        label={t("Status")}
+                                    >
+                                        <MenuItem value={"Open"}>Open</MenuItem>
+                                        <MenuItem value={"In Progress"}>In Progress</MenuItem>
+                                        <MenuItem value={"Completed"}>Completed</MenuItem>
+                                    </Select>
+                                </FormControl>
                             </Grid>
 
+                            {ability.can("manage", "all") ? (
+                                <>
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        sm={4}
+                                        md={3}
+                                        justifyContent="flex-end"
+                                        textAlign={{ sm: "right" }}
+                                    >
+                                        <Box
+                                            pr={3}
+                                            sx={{
+                                                pt: `${theme.spacing(2)}`,
+                                            }}
+                                            alignSelf="center"
+                                        >
+                                            <b>{t("Assign to")}:</b>
+                                        </Box>
+                                    </Grid>
+                                    <Grid
+                                        sx={{
+                                            mb: `${theme.spacing(3)}`,
+                                        }}
+                                        item
+                                        xs={12}
+                                        sm={8}
+                                        md={9}
+                                    >
+                                        <FormControl fullWidth variant="outlined">
+                                            <InputLabel>{t("Users")}</InputLabel>
+                                            <Select
+                                                value={values.assigne}
+                                                onChange={(e) => {
+                                                    console.log("e.target.value", e.target.value);
+                                                    setFieldValue("assigne", e.target.value);
+                                                }}
+                                                label={t("Users")}
+                                            >
+                                                {props?.usersList?.users?.map((user) => (
+                                                    <MenuItem key={user.id} value={user.id}>
+                                                        {user.firstName + " " + user.lastName}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                </>
+                            ) : null}
                             <Grid item xs={12}>
                                 <Typography align="center" marginTop={2} color="error" variant="h4">
                                     {errors.submit}
@@ -211,7 +346,7 @@ export default function AddTaskForm(props) {
                                 disabled={Boolean(errors.submit) || isSubmitting}
                                 variant="contained"
                             >
-                                {t("Edit project")}
+                                {t("Edit task")}
                             </Button>
                         ) : (
                             <Button
@@ -220,7 +355,7 @@ export default function AddTaskForm(props) {
                                 disabled={Boolean(errors.submit) || isSubmitting}
                                 variant="contained"
                             >
-                                {t("Add project ")}
+                                {t("Add task ")}
                             </Button>
                         )}
                     </DialogActions>

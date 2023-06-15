@@ -15,9 +15,10 @@ interface Props {
     getProjectsList: Function;
     filters: any;
     limit: any;
+    usersList: any;
 }
 
-const PageHeader: FC<Props> = ({ getProjectsList, filters, limit }: Props) => {
+const PageHeader: FC<Props> = ({ getProjectsList, filters, limit, usersList }: Props) => {
     const { t }: { t: any } = useTranslation();
     const [open, setOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -80,7 +81,11 @@ const PageHeader: FC<Props> = ({ getProjectsList, filters, limit }: Props) => {
                             {t("Fill in the fields below to create a new project.")}
                         </Typography>
                     </DialogTitle>
-                    <AddProjectForm handleClose={handleCreateProjectClose} getProjectsList={getProjectsList} />
+                    <AddProjectForm
+                        handleClose={handleCreateProjectClose}
+                        getProjectsList={getProjectsList}
+                        usersList={usersList}
+                    />
                 </Dialog>
             </Dialog>
         </>
