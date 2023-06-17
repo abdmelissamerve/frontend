@@ -29,7 +29,7 @@ const PageHeader: FC<Props> = ({ getUsersList }) => {
                 role: _values.role.value,
             };
             const user = await addUser(data);
-            console.log(user);
+
             resetForm();
             setStatus({ success: true });
             setSubmitting(false);

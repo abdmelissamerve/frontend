@@ -15,8 +15,8 @@ async function addProject(data: any) {
     return response;
 }
 
-async function updateProject(id: number, data: any) {
-    const response = await apiInstance.updateUserProject(id, data);
+async function updateProject(data: any, id: number) {
+    const response = await apiInstance.updateUserProject(data, id);
     return response;
 }
 

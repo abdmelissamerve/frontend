@@ -4,6 +4,7 @@ import {
     Button,
     Card,
     Dialog,
+    DialogTitle,
     Divider,
     IconButton,
     InputAdornment,
@@ -30,6 +31,7 @@ import { AbilityContext } from "@/contexts/Can";
 import { deleteProject } from "@/services/user/projects";
 import { deleteProject as deleteProjectAsAdmin } from "@/services/admin/projects";
 import { TransitionProps } from "@mui/material/transitions";
+import EditProjectForm from "./EditProjectForm";
 
 const DialogWrapper = styled(Dialog)(
     () => `
@@ -46,10 +48,11 @@ const Transition = forwardRef(function Transition(
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
-const Results = ({ projects, getProjectsList, loading, error }) => {
+const Results = ({ projects, getProjectsList, loading, error, usersList }) => {
     const ability = useContext(AbilityContext);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
+    const [openEdit, setOpenEdit] = useState(false);
 
     interface Data {
         id: number;
@@ -186,7 +189,24 @@ const Results = ({ projects, getProjectsList, loading, error }) => {
                                                     <Typography noWrap>
                                                         <Tooltip title="Edit" arrow>
                                                             <IconButton
-                                                                onClick={() => {}}
+                                                                onClick={() => {
+                                                                    console.log(project);
+                                                                    setOpenEdit(true);
+                                                                    setSelectedProject({
+                                                                        id: project.id,
+                                                                        name: project.name,
+                                                                        description: project.description,
+                                                                        status: {
+                                                                            label: project.status,
+                                                                            value: project.status,
+                                                                        },
+                                                                        dueDate: project.dueDate,
+                                                                        assigne: {
+                                                                            label: `${project.user?.firstName} ${project.user?.lastName}`,
+                                                                            value: project.user?.id,
+                                                                        },
+                                                                    });
+                                                                }}
                                                                 color="primary"
                                                                 size="small"
                                                                 color="primary"
@@ -241,7 +261,8 @@ const Results = ({ projects, getProjectsList, loading, error }) => {
                             }}
                             variant="h4"
                         >
-                            Are you sure you want to permanently delete this project?
+                            Are you sure you want to permanently delete this project? This action will also delete all
+                            tasks associated with this project.
                         </Typography>
 
                         <Box>
@@ -274,6 +295,43 @@ const Results = ({ projects, getProjectsList, loading, error }) => {
                     </Box>
                 </Box>
             </DialogWrapper>
+
+            <Dialog
+                fullWidth
+                maxWidth="md"
+                open={openEdit}
+                onClose={() => {
+                    setOpenEdit(false);
+                    setSelectedProject(null);
+                }}
+            >
+                <Dialog
+                    fullWidth
+                    maxWidth="md"
+                    open={openEdit}
+                    onClose={() => {
+                        setOpenEdit(false);
+                        setSelectedProject(null);
+                    }}
+                >
+                    <DialogTitle
+                        sx={{
+                            p: 2,
+                        }}
+                    >
+                        <Typography variant="h4" gutterBottom>
+                            Edit project
+                        </Typography>
+                        <Typography variant="subtitle2">Fill in the fields below to edit the project</Typography>
+                    </DialogTitle>
+                    <EditProjectForm
+                        handleClose={() => setOpenEdit(false)}
+                        initialData={selectedProject}
+                        usersList={usersList}
+                        getProjectsList={getProjectsList}
+                    />
+                </Dialog>
+            </Dialog>
         </>
     );
 };

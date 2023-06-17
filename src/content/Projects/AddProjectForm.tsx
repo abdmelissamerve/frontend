@@ -15,6 +15,8 @@ import {
     InputLabel,
     Select,
     Zoom,
+    Autocomplete,
+    FormHelperText,
 } from "@mui/material";
 import * as Yup from "yup";
 import "react-quill/dist/quill.snow.css";
@@ -24,7 +26,13 @@ import { addProject as addAminProject } from "@/services/admin/projects";
 import { useRefMounted } from "@/hooks/useRefMounted";
 import { useSnackbar } from "notistack";
 import { AbilityContext } from "@/contexts/Can";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+
+const statusOptions = [
+    { label: "Open", value: "Open" },
+    { label: "In Progress", value: "In Progress" },
+    { label: "Completed", value: "Completed" },
+];
 
 export default function AddProjectForm(props) {
     const ability = useContext(AbilityContext);
@@ -33,13 +41,14 @@ export default function AddProjectForm(props) {
     const { initialData, handleClose }: any = props;
     const isMountedRef = useRefMounted();
     const theme = useTheme();
+    const [usersList, setUsersList] = useState([]);
 
     const initialValues = {
         name: "",
         description: "",
         dueDate: "",
         assigne: "",
-        status: "Open",
+        status: "",
         ...initialData,
     };
 
@@ -47,8 +56,22 @@ export default function AddProjectForm(props) {
         name: Yup.string().max(255).required("The name field is required"),
         description: Yup.string().max(255).required("The description field is required"),
         dueDate: Yup.string().max(255).required("The due date field is required"),
-        status: Yup.string().max(255).required("The status field is required"),
-        assigne: ability.can("manage", "all") ? Yup.string().max(255).required("The assigne field is required") : null,
+        status: Yup.object()
+            .shape({
+                label: Yup.string().required("Status is required"),
+                value: Yup.string().required("Status is required"),
+            })
+            .nullable()
+            .required("Status is required"),
+        assigne: ability.can("manage", "all")
+            ? Yup.object()
+                  .shape({
+                      label: Yup.string().required("Assinge is required"),
+                      value: Yup.string().required("Assinge is required"),
+                  })
+                  .nullable()
+                  .required("Assinge is required")
+            : null,
     });
 
     const onSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>): Promise<void> => {
@@ -56,12 +79,12 @@ export default function AddProjectForm(props) {
             name: values.name,
             description: values.description,
             dueDate: values.dueDate,
-            status: values.status,
+            status: values.status?.value,
         };
 
         try {
             if (ability.can("manage", "all")) {
-                data["assigne"] = values.assigne;
+                data["user"] = values.assigne.value;
                 await addAminProject(data);
             } else {
                 await addProject(data);
@@ -95,11 +118,23 @@ export default function AddProjectForm(props) {
                     autoHideDuration: 2000,
                 });
             }
-            console.error(error);
+            console.log("There was an error!", error);
             helpers.setStatus({ success: false });
-            helpers.setErrors({ submit: error.message });
+            helpers.setErrors({ submit: error?.data?.error });
+            helpers.setSubmitting(false);
         }
     };
+
+    useEffect(() => {
+        if (props?.usersList?.length > 0) {
+            setUsersList(
+                props?.usersList?.map((user) => ({
+                    label: user.firstName + " " + user.lastName,
+                    value: user.id,
+                }))
+            );
+        }
+    }, [props?.usersList]);
 
     return (
         <Formik
@@ -240,20 +275,24 @@ export default function AddProjectForm(props) {
                                 sm={8}
                                 md={9}
                             >
-                                <FormControl fullWidth variant="outlined">
-                                    <InputLabel>Status</InputLabel>
-                                    <Select
-                                        value={values.status}
-                                        onChange={(e) => {
-                                            setFieldValue("status", e.target.value);
-                                        }}
-                                        label="Status"
-                                    >
-                                        <MenuItem value={"Open"}>Open</MenuItem>
-                                        <MenuItem value={"In Progress"}>In Progress</MenuItem>
-                                        <MenuItem value={"Completed"}>Completed</MenuItem>
-                                    </Select>
-                                </FormControl>
+                                <Autocomplete
+                                    disablePortal
+                                    options={statusOptions}
+                                    getOptionLabel={(option) => option.label || ""}
+                                    defaultValue={values.status || null}
+                                    onChange={(event, value) => {
+                                        setFieldValue("status", value);
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            fullWidth
+                                            {...params}
+                                            label="Status"
+                                            error={touched.status && !!errors.status}
+                                            helperText={touched.status && errors.status?.label}
+                                        />
+                                    )}
+                                />
                             </Grid>
 
                             {ability.can("manage", "all") ? (
@@ -285,30 +324,33 @@ export default function AddProjectForm(props) {
                                         sm={8}
                                         md={9}
                                     >
-                                        <FormControl fullWidth variant="outlined">
-                                            <InputLabel>Users</InputLabel>
-                                            <Select
-                                                value={values.assigne}
-                                                onChange={(e) => {
-                                                    console.log("e.target.value", e.target.value);
-                                                    setFieldValue("assigne", e.target.value);
-                                                }}
-                                                label="Users"
-                                            >
-                                                {props?.usersList?.map((user) => (
-                                                    <MenuItem key={user.id} value={user.id}>
-                                                        {user.firstName + " " + user.lastName}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
+                                        <Autocomplete
+                                            disablePortal
+                                            options={usersList || []}
+                                            getOptionLabel={(option) => option.label || ""}
+                                            defaultValue={values.assigne || null}
+                                            onChange={(event, value) => {
+                                                console.log("value", value);
+                                                setFieldValue("assigne", value);
+                                            }}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    fullWidth
+                                                    {...params}
+                                                    label="Assigne"
+                                                    error={touched.assigne && !!errors.assigne}
+                                                    helperText={touched.assigne && errors.assigne?.label}
+                                                />
+                                            )}
+                                        />
                                     </Grid>
                                 </>
                             ) : null}
+
                             <Grid item xs={12}>
-                                <Typography align="center" marginTop={2} color="error" variant="h4">
+                                <FormHelperText sx={{ textAlign: "center" }} error>
                                     {errors.submit}
-                                </Typography>
+                                </FormHelperText>
                             </Grid>
                         </Grid>
                     </DialogContent>

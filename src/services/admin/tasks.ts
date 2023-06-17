@@ -15,8 +15,8 @@ async function getTaskById(id: number) {
     return response;
 }
 
-async function updateTask(id: number, data: any) {
-    const response = await apiInstance.updateAdminTask(id, data);
+async function updateTask(data: any, id: number) {
+    const response = await apiInstance.updateAdminTask(data, id);
     return response;
 }
 

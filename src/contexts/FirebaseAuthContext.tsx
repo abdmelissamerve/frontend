@@ -94,7 +94,6 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
                     });
                     try {
                         const response = await apiInstance.fetchCurrentUser();
-                        console.log(response);
                         userObj = {
                             ...userObj,
                             id: response.data.user.id,

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, SyntheticEvent, ChangeEvent } from "react";
-import { Grid, Typography, CardContent, Card, Box, Divider, Avatar } from "@mui/material";
+import { Grid, Typography, CardContent, Card, Box, Divider, Avatar, Button } from "@mui/material";
 import Text from "src/components/Text";
 import { Authenticated } from "src/components/Authenticated";
 import ExtendedSidebarLayout from "src/layouts/ExtendedSidebarLayout";
@@ -9,9 +9,12 @@ import Footer from "@/components/Footer";
 import PageProfileHeader from "@/content/Users/PageProfileHeader";
 import { fetchCurrentUser } from "@/services/admin/users";
 import { useRefMounted } from "src/hooks/useRefMounted";
+import { apiInstance } from "@/api-config/api";
+import { useRouter } from "next/router";
 
 function EditProfileTab() {
     const isMountedRef = useRefMounted();
+    const router = useRouter();
 
     const [profile, setProfile] = useState(null);
 
@@ -27,6 +30,17 @@ function EditProfileTab() {
     useEffect(() => {
         getProfile();
     }, []);
+
+    const sendVerificationCode = async () => {
+        try {
+            await apiInstance.sendVerificationCode();
+            if (isMountedRef()) {
+                router.push("/phoneVerification");
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     return (
         <>
@@ -127,6 +141,35 @@ function EditProfileTab() {
                                                         }}
                                                     >
                                                         <Text color="black">********</Text>
+                                                    </Box>
+                                                </Grid>
+                                                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: "right" }}>
+                                                    <Box pr={3} pb={2}>
+                                                        Phone Verified
+                                                    </Box>
+                                                </Grid>
+                                                <Grid item xs={12} sm={8} md={9}>
+                                                    <Box
+                                                        sx={{
+                                                            maxWidth: { xs: "auto", sm: 300 },
+                                                            display: "flex",
+                                                        }}
+                                                    >
+                                                        <Text color="black">
+                                                            {profile?.isPhoneVerified ? "Yes" : "No"}
+                                                        </Text>
+                                                        {!profile?.isPhoneVerified && (
+                                                            <Button
+                                                                variant="contained"
+                                                                sx={{
+                                                                    ml: 2,
+                                                                    height: 32,
+                                                                }}
+                                                                onClick={sendVerificationCode}
+                                                            >
+                                                                Send verification code
+                                                            </Button>
+                                                        )}
                                                     </Box>
                                                 </Grid>
                                             </Grid>

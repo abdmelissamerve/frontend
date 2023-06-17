@@ -198,8 +198,7 @@ export class Api {
         const response = await this.apisauce.post(`/admin/projects/`, data, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
             return response.data;
@@ -212,8 +211,7 @@ export class Api {
         const response = await this.apisauce.get(`/admin/projects/${id}/`, {}, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
             return response.data;
@@ -222,12 +220,11 @@ export class Api {
         }
     }
 
-    async updateAdminProject(id: number, data: any): Promise<any> {
-        const response = await this.apisauce.put(`/admin/projects/${id}/`, data, {});
+    async updateAdminProject(data: any, id: number): Promise<any> {
+        const response = await this.apisauce.patch(`/admin/projects/${id}/`, data, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
             return response.data;
@@ -240,8 +237,7 @@ export class Api {
         const response = await this.apisauce.delete(`/admin/projects/${id}/`, {}, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
             return response.data;
@@ -269,8 +265,7 @@ export class Api {
         const response = await this.apisauce.get(`/admin/tasks/${id}/`, {}, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
             return response.data;
@@ -283,8 +278,7 @@ export class Api {
         const response = await this.apisauce.post(`/admin/tasks/`, data, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
             return response.data;
@@ -293,12 +287,11 @@ export class Api {
         }
     }
 
-    async updateAdminTask(id: number, data: any): Promise<any> {
-        const response = await this.apisauce.put(`/admin/tasks/${id}/`, data, {});
+    async updateAdminTask(data: any, id: number): Promise<any> {
+        const response = await this.apisauce.patch(`/admin/tasks/${id}/`, data, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
             return response.data;
@@ -311,8 +304,7 @@ export class Api {
         const response = await this.apisauce.delete(`/admin/tasks/${id}/`, {}, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
             return response.data;
@@ -342,11 +334,10 @@ export class Api {
         const response = await this.apisauce.get(`/user/projects/${id}/`, {}, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
-            return response.data;
+            return { kind: "ok", data: response.data };
         } catch {
             return { kind: "server" };
         }
@@ -354,24 +345,23 @@ export class Api {
 
     async addUserProject(data: any): Promise<any> {
         const response = await this.apisauce.post(`/user/projects/`, data, {});
+
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
-            return response.data;
+            return { kind: "ok", data: response.data };
         } catch {
             return { kind: "server" };
         }
     }
 
-    async updateUserProject(id: number, data: any): Promise<any> {
-        const response = await this.apisauce.put(`/user/projects/${id}/`, data, {});
+    async updateUserProject(data: any, id: number): Promise<any> {
+        const response = await this.apisauce.patch(`/user/projects/${id}/`, data, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
             return response.data;
@@ -384,8 +374,7 @@ export class Api {
         const response = await this.apisauce.delete(`/user/projects/${id}/`, {}, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
             return response.data;
@@ -413,11 +402,10 @@ export class Api {
         const response = await this.apisauce.get(`/user/tasks/${id}/`, {}, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
-            return response.data;
+            return { kind: "ok", data: response.data };
         } catch {
             return { kind: "server" };
         }
@@ -427,25 +415,23 @@ export class Api {
         const response = await this.apisauce.post(`/user/tasks/`, data, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
-            return response.data;
+            return { kind: "ok", data: response.data };
         } catch {
             return { kind: "server" };
         }
     }
 
-    async updateUserTask(id: number, data: any): Promise<any> {
-        const response = await this.apisauce.put(`/user/tasks/${id}/`, data, {});
+    async updateUserTask(data: any, id: number): Promise<any> {
+        const response = await this.apisauce.patch(`/user/tasks/${id}/`, data, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
-            return response.data;
+            return { kind: "ok", data: response.data };
         } catch {
             return { kind: "server" };
         }
@@ -455,11 +441,10 @@ export class Api {
         const response = await this.apisauce.delete(`/user/tasks/${id}/`, {}, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) return problem;
-            return [];
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
-            return response.data;
+            return { kind: "ok", data: response.data };
         } catch {
             return { kind: "server" };
         }

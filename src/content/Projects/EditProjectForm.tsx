@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from "react";
-import { Formik, FormikHelpers, FormikValues } from "formik";
+import { FieldArray, Formik, FormikHelpers, FormikValues, ErrorMessage } from "formik";
+import { useTranslation } from "react-i18next";
 import {
-    Paper,
     Grid,
     DialogContent,
     TextField,
@@ -10,12 +9,10 @@ import {
     useTheme,
     DialogActions,
     Typography,
-    Checkbox,
-    FormControlLabel,
     Box,
+    MenuItem,
     FormControl,
     InputLabel,
-    MenuItem,
     Select,
     Zoom,
     Autocomplete,
@@ -23,14 +20,13 @@ import {
 } from "@mui/material";
 import * as Yup from "yup";
 import "react-quill/dist/quill.snow.css";
-
 import DatePicker from "@mui/lab/DatePicker";
-import { addTask as addTaskAsAdmin } from "@/services/admin/tasks";
-
-import { addTask } from "@/services/user/tasks";
-import { AbilityContext } from "@/contexts/Can";
+import { updateProject } from "@/services/user/projects";
+import { updateProject as updateAdminProject } from "@/services/admin/projects";
 import { useRefMounted } from "@/hooks/useRefMounted";
 import { useSnackbar } from "notistack";
+import { AbilityContext } from "@/contexts/Can";
+import { useContext, useEffect, useState } from "react";
 
 const statusOptions = [
     { label: "Open", value: "Open" },
@@ -38,22 +34,19 @@ const statusOptions = [
     { label: "Completed", value: "Completed" },
 ];
 
-export default function AddTaskForm(props) {
-    const { enqueueSnackbar } = useSnackbar();
+export default function EditProjectForm(props) {
     const ability = useContext(AbilityContext);
-    const { initialData, loading, error, handleClose }: any = props;
+    const { getProjectsList }: any = props;
+    const { enqueueSnackbar } = useSnackbar();
+    const { initialData, handleClose }: any = props;
     const isMountedRef = useRefMounted();
     const theme = useTheme();
-    const [usersList, setUsersList] = useState([]);
+    const [usersList, setUsersList] = useState<any>([]);
 
     const initialValues = {
-        name: "",
-        description: "",
-        dueDate: "",
-        assigne: "",
-        status: "",
         ...initialData,
     };
+    console.log("initialValues", initialValues);
 
     const validationSchema = Yup.object().shape({
         name: Yup.string().max(255).required("The name field is required"),
@@ -83,26 +76,23 @@ export default function AddTaskForm(props) {
             description: values.description,
             dueDate: values.dueDate,
             status: values.status?.value,
-            project: props.selectedProjectId,
         };
 
         try {
             if (ability.can("manage", "all")) {
-                data["assignedTo"] = values.assigne.value;
-                await addTaskAsAdmin(data);
+                data["user"] = values.assigne.value;
+                await updateAdminProject(data, initialData.id);
             } else {
-                await addTask(data);
+                await updateProject(data, initialData.id);
             }
             helpers.setSubmitting(true);
             helpers.setErrors({});
             helpers.setStatus({ success: true });
             helpers.setTouched({});
             handleClose();
-            props.getTasksList({
-                projectId: props.selectedProjectId,
-            });
+            getProjectsList();
             if (isMountedRef()) {
-                enqueueSnackbar("Task added successfully", {
+                enqueueSnackbar("Project added successfully", {
                     variant: "success",
                     anchorOrigin: {
                         vertical: "top",
@@ -114,7 +104,7 @@ export default function AddTaskForm(props) {
             }
         } catch (error) {
             if (isMountedRef()) {
-                enqueueSnackbar("Task could not be added", {
+                enqueueSnackbar("Project could not be added", {
                     variant: "error",
                     anchorOrigin: {
                         vertical: "top",
@@ -132,9 +122,9 @@ export default function AddTaskForm(props) {
     };
 
     useEffect(() => {
-        if (props?.usersList?.users?.length > 0) {
+        if (props?.usersList?.length > 0) {
             setUsersList(
-                props?.usersList?.users?.map((user) => ({
+                props?.usersList?.map((user) => ({
                     label: user.firstName + " " + user.lastName,
                     value: user.id,
                 }))
@@ -300,6 +290,7 @@ export default function AddTaskForm(props) {
                                     )}
                                 />
                             </Grid>
+
                             {ability.can("manage", "all") ? (
                                 <>
                                     <Grid
@@ -382,7 +373,7 @@ export default function AddTaskForm(props) {
                                 disabled={Boolean(errors.submit) || isSubmitting}
                                 variant="contained"
                             >
-                                Edit task
+                                Edit project
                             </Button>
                         ) : (
                             <Button
@@ -391,7 +382,7 @@ export default function AddTaskForm(props) {
                                 disabled={Boolean(errors.submit) || isSubmitting}
                                 variant="contained"
                             >
-                                Add task
+                                Add project
                             </Button>
                         )}
                     </DialogActions>

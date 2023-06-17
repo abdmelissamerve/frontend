@@ -25,9 +25,8 @@ import * as Yup from "yup";
 import "react-quill/dist/quill.snow.css";
 
 import DatePicker from "@mui/lab/DatePicker";
-import { addTask as addTaskAsAdmin } from "@/services/admin/tasks";
-
-import { addTask } from "@/services/user/tasks";
+import { updateTask as updateTaskAsAdmin } from "@/services/admin/tasks";
+import { updateTask } from "@/services/user/tasks";
 import { AbilityContext } from "@/contexts/Can";
 import { useRefMounted } from "@/hooks/useRefMounted";
 import { useSnackbar } from "notistack";
@@ -78,20 +77,22 @@ export default function AddTaskForm(props) {
     });
 
     const onSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>): Promise<void> => {
+        console.log("values", values);
         const data = {
             name: values.name,
             description: values.description,
             dueDate: values.dueDate,
             status: values.status?.value,
-            project: props.selectedProjectId,
         };
+
+        console.log("data", data, initialData);
 
         try {
             if (ability.can("manage", "all")) {
                 data["assignedTo"] = values.assigne.value;
-                await addTaskAsAdmin(data);
+                await updateTaskAsAdmin(data, initialData.id);
             } else {
-                await addTask(data);
+                await updateTask(data, initialData.id);
             }
             helpers.setSubmitting(true);
             helpers.setErrors({});

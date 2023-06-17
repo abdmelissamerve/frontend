@@ -19,7 +19,7 @@ import { useAuth } from "src/hooks/useAuth";
 import { useRefMounted } from "src/hooks/useRefMounted";
 
 export const LoginFirebaseAuth: FC = (props) => {
-    const { signInWithEmailAndPassword } = useAuth() as any;
+    const { signInWithEmailAndPassword, user } = useAuth() as any;
     const isMountedRef = useRefMounted();
     const router = useRouter();
 
@@ -41,6 +41,7 @@ export const LoginFirebaseAuth: FC = (props) => {
         onSubmit: async (values, helpers): Promise<void> => {
             try {
                 await signInWithEmailAndPassword(values.email, values.password);
+
                 if (isMountedRef()) {
                     const backTo = "/profile";
                     router.push(backTo);

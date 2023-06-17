@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { el } from "date-fns/locale";
 
 const MainContent = styled(Box)(
     () => `
@@ -56,6 +57,17 @@ function PhoneVerification() {
                         autoHideDuration: 2000,
                     });
                     router.push("/profile");
+                } else {
+                    values.code = "";
+                    enqueueSnackbar("Wrong code", {
+                        variant: "error",
+                        anchorOrigin: {
+                            vertical: "top",
+                            horizontal: "right",
+                        },
+                        TransitionComponent: Zoom,
+                        autoHideDuration: 2000,
+                    });
                 }
             } catch (err) {
                 console.error("err", err);
@@ -101,7 +113,7 @@ function PhoneVerification() {
                                             mb: 3,
                                         }}
                                     >
-                                        "Please input the verification code sent to your phone"
+                                        Please input the verification code sent to your phone
                                     </Typography>
                                     <TextField
                                         error={Boolean(formik.touched.code && formik.errors.code)}
@@ -129,8 +141,30 @@ function PhoneVerification() {
                                         startIcon={formik.isSubmitting ? <CircularProgress size="1rem" /> : null}
                                         disabled={formik.isSubmitting}
                                     >
-                                        "Verify code"
+                                        Verify code
                                     </Button>
+
+                                    <Typography
+                                        variant="h4"
+                                        color="text.secondary"
+                                        fontWeight="normal"
+                                        sx={{
+                                            mt: 3,
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        Didn't receive the code?
+                                        <Button
+                                            sx={{ ml: 1 }}
+                                            color="primary"
+                                            type="button"
+                                            onClick={async () => {
+                                                await apiInstance.sendVerificationCode();
+                                            }}
+                                        >
+                                            Resend code
+                                        </Button>
+                                    </Typography>
                                 </Box>
                             </form>
                         </Card>

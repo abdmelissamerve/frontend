@@ -52,23 +52,23 @@ export default function Tasks() {
     };
 
     useEffect(() => {
-        getTasksList({
-            projectId: selectedProjectId,
-        });
+        if (selectedProjectId) {
+            getTasksList({
+                projectId: selectedProjectId,
+            });
+        }
         fetchProjectsList({});
         fetchUsersList({});
-        console.log("usersData", usersData);
     }, [ability, selectedProjectId]);
 
     useEffect(() => {
         if (projectData) {
             setProjects(projectData.projects);
             if (!selectedProjectId) {
-                setSelectedProjectId(projectData.projects[0].id);
-                setSelectedProjectName(projectData.projects[0].name);
+                setSelectedProjectId(projectData?.projects?.[0]?.id);
+                setSelectedProjectName(projectData?.projects?.[0]?.name);
             }
         }
-        console.log("projectData", projectData);
     }, [projectData, selectedProjectId, selectedProjectName]);
 
     const handleProjectChange = (event) => {
@@ -99,6 +99,7 @@ export default function Tasks() {
                         loading={loading}
                         error={error}
                         selectedProjectId={selectedProjectId}
+                        usersList={usersData}
                     />
                 </Grid>
             </Grid>

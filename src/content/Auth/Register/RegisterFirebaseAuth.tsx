@@ -21,7 +21,7 @@ import { useRefMounted } from "src/hooks/useRefMounted";
 import { apiInstance } from "@/api-config/api";
 
 export const RegisterFirebaseAuth: FC = (props) => {
-    const { signInWithEmailAndPassword, sendEmailVerification } = useAuth() as any;
+    const { signInWithEmailAndPassword } = useAuth() as any;
     const isMountedRef = useRefMounted();
     const router = useRouter();
     const phoneRegExp = /^0((\([0-9]{2,3}\))|([0-9]{1,3}))*?[0-9]{3,4}?[0-9]{3,4}?$/;
@@ -76,10 +76,10 @@ export const RegisterFirebaseAuth: FC = (props) => {
 
                 if (user) {
                     await signInWithEmailAndPassword(values.email, values.password);
-                    await sendEmailVerification();
+                    await apiInstance.sendVerificationCode();
                 }
                 if (isMountedRef() && user) {
-                    router.push("/emailVerification");
+                    router.push("/phoneVerification");
                 }
             } catch (err) {
                 console.error("err", err);

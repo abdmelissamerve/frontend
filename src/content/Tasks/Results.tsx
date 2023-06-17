@@ -4,6 +4,7 @@ import {
     Button,
     Card,
     Dialog,
+    DialogTitle,
     Divider,
     IconButton,
     InputAdornment,
@@ -30,6 +31,8 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import { deleteTask as deleteTaskAsAdmin } from "@/services/admin/tasks";
 import { deleteTask } from "@/services/user/tasks";
+import EditProjectForm from "../Projects/EditProjectForm";
+import EditTaskForm from "./EditTaskForm";
 
 const DialogWrapper = styled(Dialog)(
     () => `
@@ -46,10 +49,11 @@ const Transition = forwardRef(function Transition(
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
-const Results = ({ tasks, getTasksList, selectedProjectId, loading, error }) => {
+const Results = ({ tasks, getTasksList, selectedProjectId, loading, error, usersList }) => {
     const ability = useContext(AbilityContext);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
+    const [openEdit, setOpenEdit] = useState(false);
 
     interface Data {
         id: number;
@@ -122,6 +126,7 @@ const Results = ({ tasks, getTasksList, selectedProjectId, loading, error }) => 
         setConfirmDelete(false);
         setSelectedTask(null);
     };
+
     return (
         <>
             <Card>
@@ -187,7 +192,23 @@ const Results = ({ tasks, getTasksList, selectedProjectId, loading, error }) => 
                                                     <Typography noWrap>
                                                         <Tooltip title="Edit" arrow>
                                                             <IconButton
-                                                                onClick={() => {}}
+                                                                onClick={() => {
+                                                                    setOpenEdit(true);
+                                                                    setSelectedTask({
+                                                                        id: task.id,
+                                                                        name: task.name,
+                                                                        description: task.description,
+                                                                        status: {
+                                                                            label: task.status,
+                                                                            value: task.status,
+                                                                        },
+                                                                        dueDate: task.dueDate,
+                                                                        assigne: {
+                                                                            label: `${task.user?.firstName} ${task.user?.lastName}`,
+                                                                            value: task.user?.id,
+                                                                        },
+                                                                    });
+                                                                }}
                                                                 color="primary"
                                                                 size="small"
                                                                 color="primary"
@@ -275,6 +296,44 @@ const Results = ({ tasks, getTasksList, selectedProjectId, loading, error }) => 
                     </Box>
                 </Box>
             </DialogWrapper>
+
+            <Dialog
+                fullWidth
+                maxWidth="md"
+                open={openEdit}
+                onClose={() => {
+                    setOpenEdit(false);
+                    setSelectedTask(null);
+                }}
+            >
+                <Dialog
+                    fullWidth
+                    maxWidth="md"
+                    open={openEdit}
+                    onClose={() => {
+                        setOpenEdit(false);
+                        setSelectedTask(null);
+                    }}
+                >
+                    <DialogTitle
+                        sx={{
+                            p: 2,
+                        }}
+                    >
+                        <Typography variant="h4" gutterBottom>
+                            Edit task
+                        </Typography>
+                        <Typography variant="subtitle2">Fill in the fields below to edit the task</Typography>
+                    </DialogTitle>
+                    <EditTaskForm
+                        handleClose={() => setOpenEdit(false)}
+                        initialData={selectedTask}
+                        getTasksList={getTasksList}
+                        usersList={usersList}
+                        selectedProjectId={selectedProjectId}
+                    />
+                </Dialog>
+            </Dialog>
         </>
     );
 };

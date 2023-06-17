@@ -68,7 +68,7 @@ const PageHeader: FC<Props> = ({
                     >
                     
                          <FormControl fullWidth variant="outlined">
-                                    <InputLabel>"Projects"</InputLabel>
+                                    <InputLabel>Projects</InputLabel>
                                     <Select
                                      sx={{
                                         minWidth: 200,
@@ -78,7 +78,7 @@ const PageHeader: FC<Props> = ({
                                         onChange={handleProjectChange}
                                         label="Projects"
                                     >
-                            {projects.map((project) => (
+                            {projects?.map((project) => (
                                 <MenuItem key={project.id} value={project.id}
                                 
                                 >
@@ -134,6 +134,7 @@ const PageHeader: FC<Props> = ({
                     getTasksList = {getTasksList}
                     usersList   = {usersList}
                     selectedProjectId = {selectedProjectId}
+                    
                     />
                 </Dialog>
             </Dialog>

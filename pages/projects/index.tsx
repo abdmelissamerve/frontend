@@ -52,6 +52,7 @@ export default function Projects() {
             <Grid sx={{ px: 4 }} container direction="row" justifyContent="center" alignItems="stretch" spacing={3}>
                 <Grid item xs={12}>
                     <Results
+                        usersList={usersData?.users}
                         projects={data?.projects}
                         getProjectsList={getProjectsList}
                         loading={loading}
