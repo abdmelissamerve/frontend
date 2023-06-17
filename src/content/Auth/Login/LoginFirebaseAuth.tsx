@@ -40,7 +40,8 @@ export const LoginFirebaseAuth: FC = (props) => {
         }),
         onSubmit: async (values, helpers): Promise<void> => {
             try {
-                await signInWithEmailAndPassword(values.email, values.password);
+                const user = await signInWithEmailAndPassword(values.email, values.password);
+                console.log("USEEEER", user);
 
                 if (isMountedRef()) {
                     const backTo = "/profile";
@@ -50,9 +51,9 @@ export const LoginFirebaseAuth: FC = (props) => {
                 if (isMountedRef()) {
                     helpers.setStatus({ success: false });
                     if (err.code === "auth/user-not-found") {
-                        helpers.setErrors({ submit: t("The email address is not registered") });
+                        helpers.setErrors({ submit: "The email address is not registered" });
                     } else if (err.code === "auth/wrong-password") {
-                        helpers.setErrors({ submit: t("The password is invalid") });
+                        helpers.setErrors({ submit: "The password is invalid" });
                     } else {
                         helpers.setErrors({ submit: err.message });
                     }
