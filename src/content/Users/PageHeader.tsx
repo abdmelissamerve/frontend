@@ -1,9 +1,4 @@
 import { useState, FC } from "react";
-import * as Yup from "yup";
-import { Formik } from "formik";
-import { useTranslation } from "react-i18next";
-import { wait } from "src/utils/wait";
-import { useAuth } from "src/hooks/useAuth";
 
 import PropTypes from "prop-types";
 
