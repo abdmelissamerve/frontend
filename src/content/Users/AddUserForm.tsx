@@ -12,6 +12,7 @@ import {
     Typography,
     MenuItem,
     Autocomplete,
+    FormHelperText,
 } from "@mui/material";
 import * as Yup from "yup";
 import "react-quill/dist/quill.snow.css";
@@ -31,34 +32,54 @@ const defaultProps = {
     initialData: {},
 };
 
-const superUserOptions = [
+const roleOptions = [
     { label: "Admin", value: "admin" },
-    { label: "Technician", value: "technician" },
     { label: "User", value: "user" },
 ];
 
 const AddUserForm = (props: FormProps = defaultProps) => {
     const { addUser, handleCancel, initialData, errorMessage } = props;
+    const phoneRegExp = /^0((\([0-9]{2,3}\))|([0-9]{1,3}))*?[0-9]{3,4}?[0-9]{3,4}?$/;
 
     const initialValues = {
         email: "",
-        first_name: "",
-        last_name: "",
+        firstName: "",
+        lastName: "",
         password: "",
+        phoneNumber: "",
         role: "",
-        is_active: null,
         submit: null,
         ...initialData,
     };
 
     const validationSchema = Yup.object().shape({
-        first_name: Yup.string().max(255).required("The first name field is required"),
-        last_name: Yup.string().max(255).required("The last name field is required"),
+        firstName: Yup.string()
+            .matches(/^[a-zA-Z\s]+$/, "The first name can only contain letters")
+            .min(2)
+            .max(50)
+            .required("The first name field is required"),
+        lastName: Yup.string()
+            .matches(/^[a-zA-Z\s]+$/, "The first name can only contain letters")
+            .min(2)
+            .max(50)
+            .required("The first name field is required"),
         email: Yup.string()
-            .email("The email provided should be a valid email address")
+            .email("The email address provided is invalid")
             .max(255)
             .required("The email field is required"),
-        password: Yup.string().max(255).required("The password field is required"),
+        password: Yup.string().min(8).max(255).required("The password field is required"),
+        phoneNumber: Yup.string()
+            .required("The phone number field is required")
+            .matches(phoneRegExp, "Phone number is not valid")
+            .min(10)
+            .max(10),
+        role: Yup.object()
+            .shape({
+                label: Yup.string().required("Role is required"),
+                value: Yup.string().required("Role is required"),
+            })
+            .nullable()
+            .required("Role is required"),
     });
 
     return (
@@ -74,27 +95,27 @@ const AddUserForm = (props: FormProps = defaultProps) => {
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={6}>
                                 <TextField
-                                    error={Boolean(touched.first_name && errors.first_name)}
+                                    error={Boolean(touched.firstName && errors.firstName)}
                                     fullWidth
-                                    helperText={touched.first_name && errors.first_name}
+                                    helperText={touched.firstName && errors.firstName}
                                     label="First name"
-                                    name="first_name"
+                                    name="firstName"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
-                                    value={values.first_name}
+                                    value={values.firstName}
                                     variant="outlined"
                                 />
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <TextField
-                                    error={Boolean(touched.last_name && errors.last_name)}
+                                    error={Boolean(touched.lastName && errors.lastName)}
                                     fullWidth
-                                    helperText={touched.last_name && errors.last_name}
+                                    helperText={touched.lastName && errors.lastName}
                                     label="Last name"
-                                    name="last_name"
+                                    name="lastName"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
-                                    value={values.last_name}
+                                    value={values.lastName}
                                     variant="outlined"
                                 />
                             </Grid>
@@ -126,22 +147,48 @@ const AddUserForm = (props: FormProps = defaultProps) => {
                                     variant="outlined"
                                 />
                             </Grid>
-                            <Grid item xs={12}>
+
+                            <Grid item xs={12} md={6}>
                                 <Autocomplete
                                     disablePortal
-                                    options={superUserOptions}
+                                    options={roleOptions}
                                     getOptionLabel={(option) => option.label || ""}
                                     defaultValue={values.role || null}
                                     onChange={(event, value) => {
                                         setFieldValue("role", value);
                                     }}
-                                    renderInput={(params) => <TextField fullWidth {...params} label="Role" />}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            fullWidth
+                                            {...params}
+                                            label="Role"
+                                            error={touched.role && !!errors.role}
+                                            helperText={touched.role && errors.role?.label}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    error={Boolean(touched.phoneNumber && errors.phoneNumber)}
+                                    fullWidth
+                                    helperText={touched.phoneNumber && errors.phoneNumber}
+                                    label="Phone number"
+                                    name="phoneNumber"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    type="text"
+                                    value={values.phoneNumber}
+                                    variant="outlined"
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <Typography align="center" color="error" variant="h4">
-                                    {errors.submit}
-                                </Typography>
+                                {Boolean(touched.submit && errors.submit) && (
+                                    <FormHelperText sx={{ textAlign: "center" }} error>
+                                        {errors.submit}
+                                    </FormHelperText>
+                                )}
                             </Grid>
                         </Grid>
                     </DialogContent>

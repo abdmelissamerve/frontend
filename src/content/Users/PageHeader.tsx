@@ -1,11 +1,9 @@
 import { useState, FC } from "react";
 
-import PropTypes from "prop-types";
-
 import { styled, Grid, Dialog, DialogTitle, Box, Zoom, Typography, Button } from "@mui/material";
 import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
 import { useSnackbar } from "notistack";
-import { addUsers } from "@/services/admin/users";
+import { addUser } from "@/services/admin/users";
 import dynamic from "next/dynamic";
 const AddUserForm = dynamic(() => import("./AddUserForm"), {
     ssr: false,
@@ -23,13 +21,15 @@ const PageHeader: FC<Props> = ({ getUsersList }) => {
     const handleFormSubmit = async (_values, { resetForm, setErrors, setStatus, setSubmitting }) => {
         try {
             const data = {
+                firstName: _values.firstName,
+                lastName: _values.lastName,
                 email: _values.email,
-                first_name: _values.first_name,
-                last_name: _values.last_name,
                 password: _values.password,
+                phoneNumber: _values.phoneNumber,
                 role: _values.role.value,
             };
-            await addUsers(data);
+            const user = await addUser(data);
+            console.log(user);
             resetForm();
             setStatus({ success: true });
             setSubmitting(false);
@@ -38,7 +38,7 @@ const PageHeader: FC<Props> = ({ getUsersList }) => {
         } catch (err) {
             console.log(err);
             setStatus({ success: false });
-            setErrors({ submit: err.data.detail });
+            setErrors({ submit: err?.data?.error });
             setSubmitting(false);
         }
     };
@@ -60,6 +60,7 @@ const PageHeader: FC<Props> = ({ getUsersList }) => {
                 horizontal: "right",
             },
             TransitionComponent: Zoom,
+            autoHideDuration: 2000,
         });
 
         setOpen(false);

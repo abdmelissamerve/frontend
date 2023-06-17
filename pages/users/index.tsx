@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, SyntheticEvent, ChangeEvent, useContext } from "react";
+import { useEffect, useCallback, useContext } from "react";
 
 import Head from "next/head";
 
@@ -18,10 +18,7 @@ import { useFetchData } from "@/hooks/useFetch";
 import { AbilityContext } from "@/contexts/Can";
 import NotAuthorized from "../status/not_authorized";
 
-interface Filters {
-    role?: string;
-    active?: boolean;
-}
+
 
 function ManagementUsers() {
     const isMountedRef = useRefMounted();

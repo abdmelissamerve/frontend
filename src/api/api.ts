@@ -6,6 +6,7 @@ import type { ApiConfig } from "./api-config";
 import { requestsCallbackMonitor, getCurrentUserAuthorization } from "./monitorAxiosReq";
 import axios from "axios";
 import { identity } from "@casl/ability/dist/types/utils";
+import { deleteUser } from "firebase/auth";
 
 /**
  * Manages all requests to the API.
@@ -135,6 +136,49 @@ export class Api {
             return { kind: "server" };
         }
     }
+
+    async addUser(data: any): Promise<any> {
+        const response = await this.apisauce.post("/admin/users/", data, {});
+
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) throw { ...problem, data: response.data };
+        }
+        try {
+            return { kind: "ok", data: response.data };
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async updateUser(data: any, id: number): Promise<any> {
+        const response = await this.apisauce.patch(`/admin/users/${id}/`, data, {});
+
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) throw { ...problem, data: response.data };
+        }
+        try {
+            return { kind: "ok", data: response.data };
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
+    async deleteUser(id: number): Promise<any> {
+        const response = await this.apisauce.delete(`/admin/users/${id}/`, {}, {});
+
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) throw { ...problem, data: response.data };
+        }
+        try {
+            return { kind: "ok", data: response.data };
+        } catch {
+            return { kind: "server" };
+        }
+    }
+
     //projects
     async getAdminProjects(data: any): Promise<any> {
         const response = await this.apisauce.get(`/admin/projects/`, data, {});

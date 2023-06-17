@@ -36,6 +36,7 @@ import SearchTwoToneIcon from "@mui/icons-material/SearchTwoTone";
 import { useSnackbar } from "notistack";
 import LaunchTwoToneIcon from "@mui/icons-material/LaunchTwoTone";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
+import { updateUser, deleteUser } from "@/services/admin/users";
 
 import dynamic from "next/dynamic";
 
@@ -49,31 +50,6 @@ const DialogWrapper = styled(Dialog)(
         overflow: visible;
       }
 `
-);
-
-const TabsWrapper = styled(Tabs)(
-    ({ theme }) => `
-    @media (max-width: ${theme.breakpoints.values.md}px) {
-      .MuiTabs-scrollableX {
-        overflow-x: auto !important;
-      }
-
-      .MuiTabs-indicator {
-          box-shadow: none;
-      }
-    }
-    `
-);
-
-const ButtonSuccess = styled(Button)(
-    ({ theme }) => `
-     background: ${theme.colors.primary.dark};
-     color: ${theme.palette.success.contrastText};
-
-     &:hover {
-        background: ${theme.colors.primary.light};
-     }
-    `
 );
 
 interface ResultsProps {
@@ -100,18 +76,18 @@ const Results: FC<ResultsProps> = ({ users, getUsersList, loading, error }) => {
     const timeout = useRef<ReturnType<typeof setTimeout>>();
 
     const handleOpenEditUser = (user) => {
+        console.log(user);
         setUserData({
             id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            is_active: {
-                label: user.is_active ? "Active" : "Inactive",
-                value: user.is_active ? true : false,
-            },
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+
             role: {
-                label: user.role === "admin" ? "Admin" : user.role === "technician" ? "Technician" : "User",
-                value: user.role === "admin" ? "admin" : user.role === "technician" ? "technician" : "user",
+                label: user.role === "admin" ? "Admin" : "User",
+                value: user.role === "admin" ? "admin" : "user",
             },
+            phoneNumber: user.phoneNumber,
         });
         setEditUser(true);
     };
@@ -128,21 +104,46 @@ const Results: FC<ResultsProps> = ({ users, getUsersList, loading, error }) => {
         setOpenConfirmDelete(false);
     };
 
-    const handleDeleteCompleted = async () => {};
+    const handleDeleteCompleted = async () => {
+        try {
+            await deleteUser(userData.id);
+            await getUsersList({});
+            closeConfirmDelete();
+            enqueueSnackbar("The user was deleted successfully", {
+                variant: "success",
+                anchorOrigin: {
+                    vertical: "top",
+                    horizontal: "right",
+                },
+                TransitionComponent: Zoom,
+                autoHideDuration: 1000,
+            });
+        } catch (err) {
+            enqueueSnackbar(err?.data?.error, {
+                variant: "error",
+                anchorOrigin: {
+                    vertical: "top",
+                    horizontal: "right",
+                },
+                TransitionComponent: Zoom,
+                autoHideDuration: 1000,
+            });
+            closeConfirmDelete();
+            console.error(err?.data?.error);
+        }
+    };
 
     const handleEditFormSubmit = async (_values, { resetForm, setErrors, setStatus, setSubmitting }) => {
         try {
             let data: any = {
-                id: _values.id,
-                first_name: _values.first_name,
-                last_name: _values.last_name,
-                is_active: _values.is_active.value,
+                firstName: _values.firstName,
+                lastName: _values.lastName,
                 role: _values.role.value,
+                phoneNumber: _values.phoneNumber,
             };
-            if (_values.password !== "") {
-                data = { ...data, password: _values.password };
-            }
-            // await updateUser(data, userData.id);
+
+            console.log(data);
+            await updateUser(data, userData.id);
             await getUsersList({});
             resetForm();
             setStatus({ success: true });
@@ -169,29 +170,12 @@ const Results: FC<ResultsProps> = ({ users, getUsersList, loading, error }) => {
         });
     };
 
-    const tabs = [
-        {
-            value: "all",
-            label: "All users",
-        },
-        {
-            value: "admin",
-            label: "Admin",
-        },
-        {
-            value: "user",
-            label: "User",
-        },
-    ];
-
     interface Data {
         id: number;
-        first_name: string;
-        last_name: string;
+        firstName: string;
+        lastName: string;
         email: string;
-        is_active: boolean;
         role: string;
-        register_provider: string;
     }
 
     interface HeadCell {
@@ -207,7 +191,7 @@ const Results: FC<ResultsProps> = ({ users, getUsersList, loading, error }) => {
             align: "center",
         },
         {
-            id: "first_name",
+            id: "firstName",
             label: "Name",
             align: "left",
         },
@@ -216,21 +200,13 @@ const Results: FC<ResultsProps> = ({ users, getUsersList, loading, error }) => {
             label: "Email",
             align: "left",
         },
-        {
-            id: "is_active",
-            label: "Active",
-            align: "center",
-        },
+
         {
             id: "role",
             label: "Role",
             align: "left",
         },
-        {
-            id: "register_provider",
-            label: "Register provider",
-            align: "left",
-        },
+
         {
             id: "actions",
             label: "Actions",
@@ -302,23 +278,13 @@ const Results: FC<ResultsProps> = ({ users, getUsersList, loading, error }) => {
                                                 <TableCell>
                                                     <Typography>{user.email}</Typography>
                                                 </TableCell>
-                                                <TableCell align={"center"}>
-                                                    <span>
-                                                        {user.is_active ? (
-                                                            <CircleIcon style={{ color: "#1CD63F" }} />
-                                                        ) : (
-                                                            <CircleIcon style={{ color: "red" }} />
-                                                        )}
-                                                    </span>
-                                                </TableCell>
+
                                                 <TableCell>
                                                     <Typography>
                                                         {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                                                     </Typography>
                                                 </TableCell>
-                                                <TableCell>
-                                                    <Typography>{user.register_provider}</Typography>
-                                                </TableCell>
+
                                                 <TableCell align="center">
                                                     <Typography noWrap>
                                                         <Tooltip title="Edit" arrow>
@@ -331,16 +297,10 @@ const Results: FC<ResultsProps> = ({ users, getUsersList, loading, error }) => {
                                                                 <LaunchTwoToneIcon fontSize="small" />
                                                             </IconButton>
                                                         </Tooltip>
-                                                        <Tooltip title="Reset Password" arrow>
-                                                            <IconButton
-                                                                onClick={() => handleResetPassword(user)}
-                                                                color="primary"
-                                                            >
-                                                                <LockResetIcon fontSize="small" />
-                                                            </IconButton>
-                                                        </Tooltip>
+
                                                         <Tooltip title="Delete" arrow>
                                                             <IconButton
+                                                                // disabled={user.role === "admin"}
                                                                 onClick={() => handleConfirmDelete(user)}
                                                                 color="primary"
                                                             >

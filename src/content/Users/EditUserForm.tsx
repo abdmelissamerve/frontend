@@ -10,48 +10,67 @@ import {
     useTheme,
     DialogActions,
     Typography,
-    Autocomplete,
     MenuItem,
+    Autocomplete,
+    FormHelperText,
 } from "@mui/material";
 import * as Yup from "yup";
 import "react-quill/dist/quill.snow.css";
 
 interface FormProps {
-    editUser(values: FormikValues, formikHelpers: FormikHelpers<FormikValues>): void | Promise<any>;
+    addUser(values: FormikValues, formikHelpers: FormikHelpers<FormikValues>): void | Promise<any>;
 
     handleCancel(event: MouseEventHandler<HTMLButtonElement>): void;
-
+    errorMessage: any;
     initialData?: object;
+    editUser(values: FormikValues, formikHelpers: FormikHelpers<FormikValues>): void | Promise<any>;
 }
 
 const defaultProps = {
-    editUser: () => {},
+    addUser: () => {},
     handleCancel: () => {},
     errorMessage: "",
     initialData: {},
+    editUser: () => {},
 };
 
-const superUserOptions = [
+const roleOptions = [
     { label: "Admin", value: "admin" },
-    { label: "Technician", value: "technician" },
     { label: "User", value: "user" },
 ];
 
-const activeOptions = [
-    { label: "Active", value: true },
-    { label: "Inactive", value: false },
-];
-
-const AddUserForm = (props: FormProps = defaultProps) => {
-    const { editUser, handleCancel, initialData } = props;
+const EditUserForm = (props: FormProps = defaultProps) => {
+    const { editUser, handleCancel, initialData, errorMessage } = props;
+    const phoneRegExp = /^0((\([0-9]{2,3}\))|([0-9]{1,3}))*?[0-9]{3,4}?[0-9]{3,4}?$/;
 
     const initialValues = {
         ...initialData,
     };
 
     const validationSchema = Yup.object().shape({
-        first_name: Yup.string().max(255).required("The first name field is required"),
-        last_name: Yup.string().max(255).required("The last name field is required"),
+        firstName: Yup.string()
+            .matches(/^[a-zA-Z\s]+$/, "The first name can only contain letters")
+            .min(2)
+            .max(50)
+            .required("The first name field is required"),
+        lastName: Yup.string()
+            .matches(/^[a-zA-Z\s]+$/, "The first name can only contain letters")
+            .min(2)
+            .max(50)
+            .required("The first name field is required"),
+        phoneNumber: Yup.string()
+            .required("The phone number field is required")
+            .matches(phoneRegExp, "Phone number is not valid")
+            .min(10)
+            .max(10),
+
+        role: Yup.object()
+            .shape({
+                label: Yup.string().required("Role label is required"),
+                value: Yup.string().required("Role value is required"),
+            })
+            .nullable()
+            .required("Role is required"),
     });
 
     return (
@@ -61,7 +80,7 @@ const AddUserForm = (props: FormProps = defaultProps) => {
             onSubmit={editUser}
             validationSchema={validationSchema}
         >
-            {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, setFieldValue, touched, values }) => (
+            {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, setFieldValue, values }) => (
                 <form onSubmit={handleSubmit}>
                     <DialogContent
                         dividers
@@ -72,53 +91,86 @@ const AddUserForm = (props: FormProps = defaultProps) => {
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={6}>
                                 <TextField
-                                    error={Boolean(touched.first_name && errors.first_name)}
+                                    error={Boolean(touched.firstName && errors.firstName)}
                                     fullWidth
-                                    helperText={touched.first_name && errors.first_name}
-                                    label={"First name"}
-                                    name="first_name"
+                                    helperText={touched.firstName && errors.firstName}
+                                    label="First name"
+                                    name="firstName"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
-                                    value={values.first_name}
+                                    value={values.firstName}
                                     variant="outlined"
                                 />
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <TextField
-                                    error={Boolean(touched.last_name && errors.last_name)}
+                                    error={Boolean(touched.lastName && errors.lastName)}
                                     fullWidth
-                                    helperText={touched.last_name && errors.last_name}
-                                    label={"Last name"}
-                                    name="last_name"
+                                    helperText={touched.lastName && errors.lastName}
+                                    label="Last name"
+                                    name="lastName"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
-                                    value={values.last_name}
+                                    value={values.lastName}
                                     variant="outlined"
                                 />
                             </Grid>
                             <Grid item xs={12} md={6}>
-                                <Autocomplete
-                                    disablePortal
-                                    options={activeOptions}
-                                    getOptionLabel={(option) => option.label || ""}
-                                    defaultValue={values.is_active}
-                                    onChange={(event, value) => {
-                                        setFieldValue("is_active", value);
-                                    }}
-                                    renderInput={(params) => <TextField fullWidth {...params} label={"Active"} />}
+                                <TextField
+                                    disabled
+                                    error={Boolean(touched.email && errors.email)}
+                                    fullWidth
+                                    helperText={touched.email && errors.email}
+                                    label="Email address"
+                                    name="email"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    type="email"
+                                    value={values.email}
+                                    variant="outlined"
                                 />
                             </Grid>
+
                             <Grid item xs={12} md={6}>
                                 <Autocomplete
                                     disablePortal
-                                    options={superUserOptions}
+                                    options={roleOptions}
                                     getOptionLabel={(option) => option.label || ""}
-                                    defaultValue={values.role}
+                                    defaultValue={values.role || null}
                                     onChange={(event, value) => {
                                         setFieldValue("role", value);
                                     }}
-                                    renderInput={(params) => <TextField fullWidth {...params} label={"Role"} />}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            fullWidth
+                                            {...params}
+                                            label="Role"
+                                            error={touched.role && !!errors.role}
+                                            helperText={touched.role && errors.role?.label}
+                                        />
+                                    )}
                                 />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    error={Boolean(touched.phoneNumber && errors.phoneNumber)}
+                                    fullWidth
+                                    helperText={touched.phoneNumber && errors.phoneNumber}
+                                    label="Phone number"
+                                    name="phoneNumber"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    type="text"
+                                    value={values.phoneNumber}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                {Boolean(touched.submit && errors.submit) && (
+                                    <FormHelperText sx={{ textAlign: "center" }} error>
+                                        {errors.submit}
+                                    </FormHelperText>
+                                )}
                             </Grid>
                         </Grid>
                     </DialogContent>
@@ -136,7 +188,7 @@ const AddUserForm = (props: FormProps = defaultProps) => {
                             disabled={Boolean(errors.submit) || isSubmitting}
                             variant="contained"
                         >
-                            Update user
+                            Edit User
                         </Button>
                     </DialogActions>
                 </form>
@@ -145,4 +197,4 @@ const AddUserForm = (props: FormProps = defaultProps) => {
     );
 };
 
-export default AddUserForm;
+export default EditUserForm;
