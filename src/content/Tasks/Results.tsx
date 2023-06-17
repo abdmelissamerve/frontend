@@ -31,8 +31,8 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import { deleteTask as deleteTaskAsAdmin } from "@/services/admin/tasks";
 import { deleteTask } from "@/services/user/tasks";
-import EditProjectForm from "../Projects/EditProjectForm";
 import EditTaskForm from "./EditTaskForm";
+import moment from "moment";
 
 const DialogWrapper = styled(Dialog)(
     () => `
@@ -179,7 +179,7 @@ const Results = ({ tasks, getTasksList, selectedProjectId, loading, error, users
                                                     <Typography>{task.status}</Typography>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Typography>{task.dueDate}</Typography>
+                                                    <Typography>{moment(task.dueDate).format("DD/MM/YYYY")}</Typography>
                                                 </TableCell>
                                                 {ability.can("manage", "all") && (
                                                     <TableCell>

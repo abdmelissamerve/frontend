@@ -23,6 +23,7 @@ export default function Tasks() {
     const [projects, setProjects] = useState([]);
     const [selectedProjectId, setSelectedProjectId] = useState("");
     const [selectedProjectName, setSelectedProjectName] = useState("");
+    const [selectedProjectUser, setSelectedProjectUser] = useState({});
 
     const { data, loading, error, fetchData } = useFetchData(ability.can("manage", "all") ? getAdminTasks : getTasks);
     const {
@@ -67,12 +68,14 @@ export default function Tasks() {
             if (!selectedProjectId) {
                 setSelectedProjectId(projectData?.projects?.[0]?.id);
                 setSelectedProjectName(projectData?.projects?.[0]?.name);
+                setSelectedProjectUser(projectData?.projects?.[0]?.user);
             }
         }
     }, [projectData, selectedProjectId, selectedProjectName]);
 
     const handleProjectChange = (event) => {
         setSelectedProjectName(projectData.projects.find((project) => project.id == event.target.value).name);
+        setSelectedProjectUser(projectData.projects.find((project) => project.id == event.target.value).user);
         setSelectedProjectId(event.target.value);
     };
 
@@ -89,6 +92,7 @@ export default function Tasks() {
                     selectedProjectId={selectedProjectId}
                     selectedProjectName={selectedProjectName}
                     usersList={usersData}
+                    selectedProjectUser={selectedProjectUser}
                 />
             </PageTitleWrapper>
             <Grid sx={{ px: 4 }} container direction="row" justifyContent="center" alignItems="stretch" spacing={3}>

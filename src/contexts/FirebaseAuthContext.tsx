@@ -126,9 +126,8 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         });
     }, [dispatch]);
 
-    const signInWithEmailAndPassword = (email: string, password: string): Promise<any> => {
-        return firebase.auth().signInWithEmailAndPassword(email, password);
-    };
+    const signInWithEmailAndPassword = (email: string, password: string): Promise<any> =>
+        firebase.auth().signInWithEmailAndPassword(email, password);
 
     const createUserWithEmailAndPassword = async (email: string, password: string): Promise<any> =>
         firebase.auth().createUserWithEmailAndPassword(email, password);

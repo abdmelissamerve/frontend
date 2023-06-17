@@ -88,7 +88,7 @@ export default function AddTaskForm(props) {
 
         try {
             if (ability.can("manage", "all")) {
-                data["assignedTo"] = values.assigne.value;
+                data["user"] = values.assigne.value;
                 await addTaskAsAdmin(data);
             } else {
                 await addTask(data);
@@ -317,7 +317,7 @@ export default function AddTaskForm(props) {
                                             }}
                                             alignSelf="center"
                                         >
-                                            <b>Assign to:</b>
+                                            <b>Assigned to:</b>
                                         </Box>
                                     </Grid>
                                     <Grid
@@ -330,10 +330,19 @@ export default function AddTaskForm(props) {
                                         md={9}
                                     >
                                         <Autocomplete
+                                            disabled
                                             disablePortal
                                             options={usersList || []}
                                             getOptionLabel={(option) => option.label || ""}
-                                            defaultValue={values.assigne || null}
+                                            defaultValue={
+                                                values.assigne || {
+                                                    label:
+                                                        props.selectedProjectUser?.firstName +
+                                                        " " +
+                                                        props.selectedProjectUser?.lastName,
+                                                    value: props.selectedProjectUser?.id,
+                                                }
+                                            }
                                             onChange={(event, value) => {
                                                 console.log("value", value);
                                                 setFieldValue("assigne", value);
@@ -342,7 +351,7 @@ export default function AddTaskForm(props) {
                                                 <TextField
                                                     fullWidth
                                                     {...params}
-                                                    label="Assigne"
+                                                    label="Assigned to"
                                                     error={touched.assigne && !!errors.assigne}
                                                     helperText={touched.assigne && errors.assigne?.label}
                                                 />

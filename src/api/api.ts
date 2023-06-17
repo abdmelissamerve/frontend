@@ -73,7 +73,21 @@ export class Api {
         const response = await this.apisauce.get(`/user/profile/`, {}, {});
         if (!response.ok) {
             const problem = getGeneralApiProblem(response);
-            if (problem) throw problem;
+            if (problem) throw { ...problem, data: response.data };
+        }
+        try {
+            return { kind: "ok", data: response.data };
+        } catch {
+            return { kind: "bad-data" };
+        }
+    }
+
+    async updateYourProfile(data: any): Promise<any> {
+        const response = await this.apisauce.patch(`/user/profile/`, data, {});
+
+        if (!response.ok) {
+            const problem = getGeneralApiProblem(response);
+            if (problem) throw { ...problem, data: response.data };
         }
         try {
             return { kind: "ok", data: response.data };

@@ -339,6 +339,16 @@ export default function EditProjectForm(props) {
                                                 />
                                             )}
                                         />
+                                        <Typography
+                                            color="text.secondary"
+                                            sx={{
+                                                mt: 1,
+                                                ml: 1,
+                                            }}
+                                        >
+                                            Note that if you change the assignee, the tasks will be automatically
+                                            assigned to the new user.
+                                        </Typography>
                                     </Grid>
                                 </>
                             ) : null}

@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { useFormik } from "formik";
-import { FC } from "react";
+import { FC, useContext, useEffect } from "react";
 import {
     Box,
     Link,
@@ -17,9 +17,12 @@ import {
 } from "@mui/material";
 import { useAuth } from "src/hooks/useAuth";
 import { useRefMounted } from "src/hooks/useRefMounted";
+import { AuthContext } from "@/contexts/FirebaseAuthContext";
+import { apiInstance } from "@/api-config/api";
 
 export const LoginFirebaseAuth: FC = (props) => {
-    const { signInWithEmailAndPassword, user } = useAuth() as any;
+    const { signInWithEmailAndPassword } = useAuth() as any;
+    const { user } = useContext(AuthContext);
     const isMountedRef = useRefMounted();
     const router = useRouter();
 
@@ -40,13 +43,7 @@ export const LoginFirebaseAuth: FC = (props) => {
         }),
         onSubmit: async (values, helpers): Promise<void> => {
             try {
-                const user = await signInWithEmailAndPassword(values.email, values.password);
-                console.log("USEEEER", user);
-
-                if (isMountedRef()) {
-                    const backTo = "/profile";
-                    router.push(backTo);
-                }
+                await signInWithEmailAndPassword(values.email, values.password);
             } catch (err) {
                 if (isMountedRef()) {
                     helpers.setStatus({ success: false });
@@ -62,6 +59,23 @@ export const LoginFirebaseAuth: FC = (props) => {
             }
         },
     });
+
+    useEffect(() => {
+        const checkPhoneNumber = async () => {
+            if (user && user.isPhoneVerified && user.id) {
+                if (isMountedRef()) {
+                    const backTo = "/profile";
+                    router.push(backTo);
+                }
+            } else if (user && !user.isPhoneVerified && user.id) {
+                await apiInstance.sendVerificationCode();
+                if (isMountedRef()) {
+                    router.push("/phoneVerification");
+                }
+            }
+        };
+        checkPhoneNumber();
+    }, [user]);
 
     return (
         <Box {...props}>

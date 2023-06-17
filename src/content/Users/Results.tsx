@@ -70,7 +70,6 @@ const Results: FC<ResultsProps> = ({ users, getUsersList, loading, error }) => {
     const { enqueueSnackbar } = useSnackbar();
     const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
     const [userData, setUserData] = useState(null);
-    const [openConfirmResetPassword, setOpenConfirmResetPassword] = useState(false);
     const [userId, setUserId] = useState({});
     const [editUser, setEditUser] = useState(false);
     const timeout = useRef<ReturnType<typeof setTimeout>>();
@@ -176,6 +175,8 @@ const Results: FC<ResultsProps> = ({ users, getUsersList, loading, error }) => {
         lastName: string;
         email: string;
         role: string;
+        phoneNumber: string;
+        isPhoneVerified: boolean;
     }
 
     interface HeadCell {
@@ -206,18 +207,22 @@ const Results: FC<ResultsProps> = ({ users, getUsersList, loading, error }) => {
             label: "Role",
             align: "left",
         },
-
+        {
+            id: "phoneNumber",
+            label: "Phone Number",
+            align: "left",
+        },
+        {
+            id: "isPhoneVerified",
+            label: "Phone Verified",
+            align: "center",
+        },
         {
             id: "actions",
             label: "Actions",
             align: "center",
         },
     ];
-
-    const handleResetPassword = (user) => {
-        setUserId(user);
-        setOpenConfirmResetPassword(true);
-    };
 
     if (error) {
         return (
@@ -285,6 +290,19 @@ const Results: FC<ResultsProps> = ({ users, getUsersList, loading, error }) => {
                                                     </Typography>
                                                 </TableCell>
 
+                                                <TableCell>
+                                                    <Typography>{user.phoneNumber}</Typography>
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    <Typography>
+                                                        {user.isPhoneVerified ? (
+                                                            <CircleIcon sx={{ color: "success.main" }} />
+                                                        ) : (
+                                                            <CircleIcon sx={{ color: "error.main" }} />
+                                                        )}
+                                                    </Typography>
+                                                </TableCell>
+
                                                 <TableCell align="center">
                                                     <Typography noWrap>
                                                         <Tooltip title="Edit" arrow>
@@ -300,7 +318,7 @@ const Results: FC<ResultsProps> = ({ users, getUsersList, loading, error }) => {
 
                                                         <Tooltip title="Delete" arrow>
                                                             <IconButton
-                                                                // disabled={user.role === "admin"}
+                                                                disabled={user.role === "admin"}
                                                                 onClick={() => handleConfirmDelete(user)}
                                                                 color="primary"
                                                             >

@@ -19,6 +19,7 @@ interface Props {
     projects: any;
     selectedProjectId: any;
     selectedProjectName: any;
+    selectedProjectUser: any;
     usersList: any;
     getTasksList: Function;
 }
@@ -31,6 +32,7 @@ const PageHeader: FC<Props> = ({
     projects,
     selectedProjectId,
     selectedProjectName,
+    selectedProjectUser,
     usersList,
     getTasksList
 }) => {
@@ -134,6 +136,7 @@ const PageHeader: FC<Props> = ({
                     getTasksList = {getTasksList}
                     usersList   = {usersList}
                     selectedProjectId = {selectedProjectId}
+                    selectedProjectUser = {selectedProjectUser}
                     
                     />
                 </Dialog>

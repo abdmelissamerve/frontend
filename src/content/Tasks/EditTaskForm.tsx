@@ -37,7 +37,7 @@ const statusOptions = [
     { label: "Completed", value: "Completed" },
 ];
 
-export default function AddTaskForm(props) {
+export default function EditTaskForm(props) {
     const { enqueueSnackbar } = useSnackbar();
     const ability = useContext(AbilityContext);
     const { initialData, loading, error, handleClose }: any = props;
@@ -89,7 +89,7 @@ export default function AddTaskForm(props) {
 
         try {
             if (ability.can("manage", "all")) {
-                data["assignedTo"] = values.assigne.value;
+                data["user"] = values.assigne.value;
                 await updateTaskAsAdmin(data, initialData.id);
             } else {
                 await updateTask(data, initialData.id);
@@ -318,7 +318,7 @@ export default function AddTaskForm(props) {
                                             }}
                                             alignSelf="center"
                                         >
-                                            <b>Assign to:</b>
+                                            <b>Assigned to:</b>
                                         </Box>
                                     </Grid>
                                     <Grid
@@ -331,6 +331,7 @@ export default function AddTaskForm(props) {
                                         md={9}
                                     >
                                         <Autocomplete
+                                            disabled
                                             disablePortal
                                             options={usersList || []}
                                             getOptionLabel={(option) => option.label || ""}

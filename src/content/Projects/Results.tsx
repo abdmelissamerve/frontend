@@ -32,6 +32,7 @@ import { deleteProject } from "@/services/user/projects";
 import { deleteProject as deleteProjectAsAdmin } from "@/services/admin/projects";
 import { TransitionProps } from "@mui/material/transitions";
 import EditProjectForm from "./EditProjectForm";
+import moment from "moment";
 
 const DialogWrapper = styled(Dialog)(
     () => `
@@ -176,7 +177,9 @@ const Results = ({ projects, getProjectsList, loading, error, usersList }) => {
                                                     <Typography>{project.status}</Typography>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Typography>{project.dueDate}</Typography>
+                                                    <Typography>
+                                                        {moment(project.dueDate).format("DD/MM/YYYY")}
+                                                    </Typography>
                                                 </TableCell>
                                                 {ability.can("manage", "all") && (
                                                     <TableCell>

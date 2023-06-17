@@ -28,7 +28,8 @@ const PageHeader: FC<Props> = ({ getUsersList }) => {
                 phoneNumber: _values.phoneNumber,
                 role: _values.role.value,
             };
-            const user = await addUser(data);
+
+            await addUser(data);
 
             resetForm();
             setStatus({ success: true });
@@ -83,7 +84,7 @@ const PageHeader: FC<Props> = ({ getUsersList }) => {
                         variant="contained"
                         startIcon={<AddTwoToneIcon fontSize="small" />}
                     >
-                        Create user
+                        Create user/admin
                     </Button>
                 </Grid>
             </Grid>
