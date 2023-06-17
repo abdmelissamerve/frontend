@@ -31,7 +31,6 @@ import {
     TableSortLabel,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import { useTranslation } from "react-i18next";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchTwoToneIcon from "@mui/icons-material/SearchTwoTone";
 import { useSnackbar } from "notistack";
@@ -80,14 +79,6 @@ const ButtonSuccess = styled(Button)(
 interface ResultsProps {
     users: any;
     getUsersList: Function;
-    handleTabsChange: Function;
-    filters: any;
-    page: any;
-    limit: any;
-    handlePageChange: Function;
-    handleLimitChange(event: ChangeEvent<HTMLInputElement>);
-    query: any;
-    handleQueryChange: Function;
     loading: boolean;
     error: any;
 }
@@ -99,21 +90,7 @@ const Transition = forwardRef(function Transition(
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
-const Results: FC<ResultsProps> = ({
-    users,
-    getUsersList,
-    filters,
-    handleTabsChange,
-    page,
-    limit,
-    handleLimitChange,
-    handlePageChange,
-    handleQueryChange,
-    query,
-    loading,
-    error,
-}) => {
-    const { t }: { t: any } = useTranslation();
+const Results: FC<ResultsProps> = ({ users, getUsersList, loading, error }) => {
     const { enqueueSnackbar } = useSnackbar();
     const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
     const [userData, setUserData] = useState(null);
@@ -151,26 +128,7 @@ const Results: FC<ResultsProps> = ({
         setOpenConfirmDelete(false);
     };
 
-    const handleDeleteCompleted = async () => {
-        await deleteUser(userData.id);
-        await getUsersList({
-            search: "",
-            role: filters.role,
-            is_active: filters.active,
-            skip: 0,
-            limit: limit,
-        });
-        setOpenConfirmDelete(false);
-        enqueueSnackbar(t("The user has been removed"), {
-            variant: "success",
-            anchorOrigin: {
-                vertical: "top",
-                horizontal: "right",
-            },
-            TransitionComponent: Zoom,
-            autoHideDuration: 1000,
-        });
-    };
+    const handleDeleteCompleted = async () => {};
 
     const handleEditFormSubmit = async (_values, { resetForm, setErrors, setStatus, setSubmitting }) => {
         try {
@@ -185,13 +143,7 @@ const Results: FC<ResultsProps> = ({
                 data = { ...data, password: _values.password };
             }
             // await updateUser(data, userData.id);
-            await getUsersList({
-                search: "",
-                role: filters.role,
-                is_active: filters.active,
-                skip: 0,
-                limit: limit,
-            });
+            await getUsersList({});
             resetForm();
             setStatus({ success: true });
             setSubmitting(false);
@@ -206,7 +158,7 @@ const Results: FC<ResultsProps> = ({
     };
 
     const handleCreateUserSuccess = () => {
-        enqueueSnackbar(t("The user was edited successfully"), {
+        enqueueSnackbar("The user was edited successfully", {
             variant: "success",
             anchorOrigin: {
                 vertical: "top",
@@ -220,15 +172,15 @@ const Results: FC<ResultsProps> = ({
     const tabs = [
         {
             value: "all",
-            label: t("All users"),
+            label: "All users",
         },
         {
             value: "admin",
-            label: t("Admin"),
+            label: "Admin",
         },
         {
             value: "user",
-            label: t("User"),
+            label: "User",
         },
     ];
 
@@ -291,31 +243,6 @@ const Results: FC<ResultsProps> = ({
         setOpenConfirmResetPassword(true);
     };
 
-    const sendPasswordResetEmail = () => {
-        // resetPassword(userId.email).then(() => {
-        //     enqueueSnackbar(t("Password reset email sent!"), {
-        //         variant: "success",
-        //         anchorOrigin: {
-        //             vertical: "top",
-        //             horizontal: "right",
-        //         },
-        //         TransitionComponent: Zoom,
-        //     });
-        //     setOpenConfirmResetPassword(false);
-        // });
-    };
-
-    const closeConfirmPasswordReset = () => {
-        setOpenConfirmResetPassword(false);
-    };
-
-    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (timeout.current) {
-            clearTimeout(timeout.current);
-        }
-        timeout.current = setTimeout(() => handleQueryChange(event.target.value), 500);
-    };
-
     if (error) {
         return (
             <Typography
@@ -334,48 +261,7 @@ const Results: FC<ResultsProps> = ({
 
     return (
         <>
-            <Box
-                display="flex"
-                alignItems="center"
-                flexDirection={{ xs: "column", sm: "row" }}
-                justifyContent={{ xs: "center", sm: "space-between" }}
-                pb={3}
-            >
-                <TabsWrapper
-                    onChange={handleTabsChange}
-                    scrollButtons="auto"
-                    textColor="secondary"
-                    variant="scrollable"
-                    value={filters.role ? filters.role : "" || filters.active ? "active" : "" || "all"}
-                >
-                    {tabs.map((tab) => (
-                        <Tab key={tab.value} value={tab.value} label={tab.label} />
-                    ))}
-                </TabsWrapper>
-            </Box>
-
             <Card>
-                <Box p={2}>
-                    <TextField
-                        sx={{
-                            m: 0,
-                        }}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchTwoToneIcon />
-                                </InputAdornment>
-                            ),
-                        }}
-                        onChange={handleSearch}
-                        placeholder={t("Search by country, city or data center...")}
-                        size="small"
-                        fullWidth
-                        margin="normal"
-                        variant="outlined"
-                    />
-                </Box>
-                <Divider />
                 {!users?.length ? (
                     <>
                         <Typography
@@ -435,7 +321,7 @@ const Results: FC<ResultsProps> = ({
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     <Typography noWrap>
-                                                        <Tooltip title={t("Edit")} arrow>
+                                                        <Tooltip title="Edit" arrow>
                                                             <IconButton
                                                                 onClick={() => handleOpenEditUser(user)}
                                                                 color="primary"
@@ -445,7 +331,7 @@ const Results: FC<ResultsProps> = ({
                                                                 <LaunchTwoToneIcon fontSize="small" />
                                                             </IconButton>
                                                         </Tooltip>
-                                                        <Tooltip title={t("Reset Password")} arrow>
+                                                        <Tooltip title="Reset Password" arrow>
                                                             <IconButton
                                                                 onClick={() => handleResetPassword(user)}
                                                                 color="primary"
@@ -453,7 +339,7 @@ const Results: FC<ResultsProps> = ({
                                                                 <LockResetIcon fontSize="small" />
                                                             </IconButton>
                                                         </Tooltip>
-                                                        <Tooltip title={t("Delete")} arrow>
+                                                        <Tooltip title="Delete" arrow>
                                                             <IconButton
                                                                 onClick={() => handleConfirmDelete(user)}
                                                                 color="primary"
@@ -469,17 +355,6 @@ const Results: FC<ResultsProps> = ({
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        <Box p={2}>
-                            <TablePagination
-                                component="div"
-                                count={-1}
-                                onPageChange={handlePageChange}
-                                onRowsPerPageChange={handleLimitChange}
-                                page={page}
-                                rowsPerPage={limit}
-                                rowsPerPageOptions={[5, 15, 30]}
-                            />
-                        </Box>
                     </>
                 )}
             </Card>
@@ -505,7 +380,7 @@ const Results: FC<ResultsProps> = ({
                             }}
                             variant="h4"
                         >
-                            {t("Are you sure you want to permanently delete this user account")}?
+                            Are you sure you want to permanently delete this user account?
                         </Typography>
 
                         <Box>
@@ -517,7 +392,7 @@ const Results: FC<ResultsProps> = ({
                                 }}
                                 onClick={closeConfirmDelete}
                             >
-                                {t("Cancel")}
+                                Cancel
                             </Button>
                             <Button
                                 onClick={handleDeleteCompleted}
@@ -529,7 +404,7 @@ const Results: FC<ResultsProps> = ({
                                 variant="outlined"
                                 color="error"
                             >
-                                {t("Delete")}
+                                Delete
                             </Button>
                         </Box>
                     </Box>
@@ -544,10 +419,10 @@ const Results: FC<ResultsProps> = ({
                     }}
                 >
                     <Typography variant="h4" gutterBottom>
-                        {t("Edit user")}
+                        Edit user
                     </Typography>
                     <Typography variant="subtitle2">
-                        {t("Change the desired fields to update the user information.")}
+                        Change the desired fields to update the user information.
                     </Typography>
                 </DialogTitle>
                 <EdituserForm
@@ -555,49 +430,6 @@ const Results: FC<ResultsProps> = ({
                     handleCancel={handleCloseEditUser}
                     initialData={userData}
                 />
-            </Dialog>
-
-            <Dialog fullWidth maxWidth="md" open={openConfirmResetPassword} onClose={closeConfirmPasswordReset}>
-                <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column" p={5}>
-                    <Avatar>
-                        <LockResetIcon />
-                    </Avatar>
-                    <DialogTitle
-                        sx={{
-                            p: 3,
-                        }}
-                    >
-                        <Typography variant="subtitle2">
-                            {t(
-                                "We will send you a password reset link on the email account associated with this account. Are you sure"
-                            )}
-                            ?
-                        </Typography>
-                    </DialogTitle>
-                    <Box>
-                        <Button
-                            variant="text"
-                            size="large"
-                            sx={{
-                                mx: 1,
-                            }}
-                            onClick={closeConfirmPasswordReset}
-                        >
-                            {t("Cancel")}
-                        </Button>
-                        <ButtonSuccess
-                            onClick={sendPasswordResetEmail}
-                            size="large"
-                            sx={{
-                                mx: 1,
-                                px: 3,
-                            }}
-                            variant="contained"
-                        >
-                            {t("Send")}
-                        </ButtonSuccess>
-                    </Box>
-                </Box>
             </Dialog>
         </>
     );

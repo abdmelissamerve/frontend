@@ -4,11 +4,7 @@ import type { ReactElement } from "react";
 import BaseLayout from "src/layouts/BaseLayout";
 import Link from "../../../src/components/Link";
 
-import { useTranslation } from "react-i18next";
-
 function NotAuthorized() {
-    const { t }: { t: any } = useTranslation();
-
     return (
         <>
             <Head>
@@ -24,14 +20,14 @@ function NotAuthorized() {
                 }}
             >
                 <Typography variant="h2" sx={{ my: 2 }}>
-                    {t("You do not have access to this page")}
+                    "You do not have access to this page"
                 </Typography>
                 <Typography variant="h4" color="text.secondary" fontWeight="normal" sx={{ mb: 4 }}>
-                    {t("Not enough permissions to access this page. Please contact your administrator.")}
+                    "Not enough permissions to access this page. Please contact your administrator."
                 </Typography>
 
                 <Link href="/dashboard">
-                    <Button variant={"contained"}>{t("Go to your dashboard")}</Button>
+                    <Button variant={"contained"}>"Go to your dashboard"</Button>
                 </Link>
             </Box>
         </>

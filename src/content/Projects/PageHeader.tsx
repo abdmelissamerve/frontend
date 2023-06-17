@@ -1,7 +1,5 @@
 import { useState, FC } from "react";
 
-import { useTranslation } from "react-i18next";
-
 import { Grid, Dialog, DialogTitle, Zoom, Typography, Button } from "@mui/material";
 import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
 import { useSnackbar } from "notistack";
@@ -13,13 +11,10 @@ const AddProjectForm = dynamic(() => import("./AddProjectForm"), {
 
 interface Props {
     getProjectsList: Function;
-    filters: any;
-    limit: any;
     usersList: any;
 }
 
-const PageHeader: FC<Props> = ({ getProjectsList, filters, limit, usersList }: Props) => {
-    const { t }: { t: any } = useTranslation();
+const PageHeader: FC<Props> = ({ getProjectsList, usersList }: Props) => {
     const [open, setOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const { enqueueSnackbar } = useSnackbar();
@@ -38,7 +33,7 @@ const PageHeader: FC<Props> = ({ getProjectsList, filters, limit, usersList }: P
             <Grid container justifyContent="space-between" alignItems="center">
                 <Grid item>
                     <Typography variant="h3" component="h3" gutterBottom>
-                        {t("Projects")}
+                        Projects
                     </Typography>
                 </Grid>
                 <Grid item>
@@ -50,7 +45,7 @@ const PageHeader: FC<Props> = ({ getProjectsList, filters, limit, usersList }: P
                         variant="contained"
                         startIcon={<AddTwoToneIcon fontSize="small" />}
                     >
-                        {t("Create project")}
+                        Create project
                     </Button>
                 </Grid>
             </Grid>
@@ -61,10 +56,10 @@ const PageHeader: FC<Props> = ({ getProjectsList, filters, limit, usersList }: P
                     }}
                 >
                     <Typography variant="h4" gutterBottom>
-                        {t("Add new project")}
+                        Add new project
                     </Typography>
                     <Typography variant="subtitle2">
-                        {t("Fill in the fields below to create and add a new user to the site")}
+                        Fill in the fields below to create and add a new user to the site
                     </Typography>
                 </DialogTitle>
 
@@ -75,11 +70,9 @@ const PageHeader: FC<Props> = ({ getProjectsList, filters, limit, usersList }: P
                         }}
                     >
                         <Typography variant="h4" gutterBottom>
-                            {t("Add a new project")}
+                            Add a new project
                         </Typography>
-                        <Typography variant="subtitle2">
-                            {t("Fill in the fields below to create a new project.")}
-                        </Typography>
+                        <Typography variant="subtitle2">Fill in the fields below to create a new project.</Typography>
                     </DialogTitle>
                     <AddProjectForm
                         handleClose={handleCreateProjectClose}

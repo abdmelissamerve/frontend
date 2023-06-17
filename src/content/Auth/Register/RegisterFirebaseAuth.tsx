@@ -17,13 +17,12 @@ import {
 } from "@mui/material";
 import { useAuth } from "src/hooks/useAuth";
 import { useRefMounted } from "src/hooks/useRefMounted";
-import { useTranslation } from "react-i18next";
+
 import { apiInstance } from "@/api-config/api";
 
 export const RegisterFirebaseAuth: FC = (props) => {
     const { signInWithEmailAndPassword, sendEmailVerification } = useAuth() as any;
     const isMountedRef = useRefMounted();
-    const { t }: { t: any } = useTranslation();
     const router = useRouter();
     const phoneRegExp = /^0((\([0-9]{2,3}\))|([0-9]{1,3}))*?[0-9]{3,4}?[0-9]{3,4}?$/;
 
@@ -43,26 +42,26 @@ export const RegisterFirebaseAuth: FC = (props) => {
                 .matches(/^[a-zA-Z\s]+$/, "The first name can only contain letters")
                 .min(2)
                 .max(50)
-                .required(t("The first name field is required")),
+                .required("The first name field is required"),
             lastName: Yup.string()
                 .matches(/^[a-zA-Z\s]+$/, "The first name can only contain letters")
                 .min(2)
                 .max(50)
-                .required(t("The first name field is required")),
+                .required("The first name field is required"),
             email: Yup.string()
-                .email(t("The email address provided is invalid"))
+                .email("The email address provided is invalid")
                 .max(255)
-                .required(t("The email field is required")),
-            password: Yup.string().min(8).max(255).required(t("The password field is required")),
+                .required("The email field is required"),
+            password: Yup.string().min(8).max(255).required("The password field is required"),
             confirmPassword: Yup.string()
-                .oneOf([Yup.ref("password"), null], t("Passwords must match"))
-                .required(t("The password confirmation field is required")),
+                .oneOf([Yup.ref("password"), null], "Passwords must match")
+                .required("The password confirmation field is required"),
             phoneNumber: Yup.string()
                 .min(10)
                 .max(10)
                 .matches(phoneRegExp, "Phone number is not valid")
-                .required(t("The phone number field is required")),
-            terms: Yup.boolean().oneOf([true], t("You must agree to our terms and conditions")),
+                .required("The phone number field is required"),
+            terms: Yup.boolean().oneOf([true], "You must agree to our terms and conditions"),
         }),
         onSubmit: async (values, helpers): Promise<void> => {
             const data = {
@@ -102,8 +101,8 @@ export const RegisterFirebaseAuth: FC = (props) => {
                             error={Boolean(formik.touched.firstName && formik.errors.firstName)}
                             fullWidth
                             helperText={formik.touched.firstName && formik.errors.firstName}
-                            label={t("First Name")}
-                            placeholder={t("Your first name here...")}
+                            label="First Name"
+                            placeholder="Your first name here..."
                             margin="normal"
                             name="firstName"
                             onBlur={formik.handleBlur}
@@ -118,8 +117,8 @@ export const RegisterFirebaseAuth: FC = (props) => {
                             error={Boolean(formik.touched.lastName && formik.errors.lastName)}
                             fullWidth
                             helperText={formik.touched.lastName && formik.errors.lastName}
-                            label={t("Last Name")}
-                            placeholder={t("Your last name here...")}
+                            label="Last Name"
+                            placeholder="Your last name here..."
                             margin="normal"
                             name="lastName"
                             onBlur={formik.handleBlur}
@@ -134,8 +133,8 @@ export const RegisterFirebaseAuth: FC = (props) => {
                             error={Boolean(formik.touched.email && formik.errors.email)}
                             fullWidth
                             helperText={formik.touched.email && formik.errors.email}
-                            label={t("Email")}
-                            placeholder={t("Your email here...")}
+                            label="Email"
+                            placeholder="Your email here..."
                             margin="normal"
                             name="email"
                             onBlur={formik.handleBlur}
@@ -150,8 +149,8 @@ export const RegisterFirebaseAuth: FC = (props) => {
                             error={Boolean(formik.touched.password && formik.errors.password)}
                             fullWidth
                             helperText={formik.touched.password && formik.errors.password}
-                            label={t("Password")}
-                            placeholder={t("Your password here...")}
+                            label="Password"
+                            placeholder="Your password here..."
                             margin="normal"
                             name="password"
                             onBlur={formik.handleBlur}
@@ -166,8 +165,8 @@ export const RegisterFirebaseAuth: FC = (props) => {
                             error={Boolean(formik.touched.confirmPassword && formik.errors.confirmPassword)}
                             fullWidth
                             helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
-                            label={t("Confirm Password")}
-                            placeholder={t("Re-enter your password here...")}
+                            label="Confirm Password"
+                            placeholder="Re-enter your password here..."
                             margin="normal"
                             name="confirmPassword"
                             onBlur={formik.handleBlur}
@@ -183,8 +182,8 @@ export const RegisterFirebaseAuth: FC = (props) => {
                             error={Boolean(formik.touched.phoneNumber && formik.errors.phoneNumber)}
                             fullWidth
                             helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-                            label={t("Phone Number")}
-                            placeholder={t("Your phone number here...")}
+                            label="Phone Number"
+                            placeholder="Your phone number here..."
                             margin="normal"
                             name="phoneNumber"
                             onBlur={formik.handleBlur}
@@ -206,9 +205,8 @@ export const RegisterFirebaseAuth: FC = (props) => {
                     }
                     label={
                         <Typography variant="body2">
-                            {t("I accept the")}{" "}
-                            <Link href="https://pinglatency.com/terms-and-conditions">{t("terms and conditions")}</Link>
-                            .
+                            I accept the{" "}
+                            <Link href="https://pinglatency.com/terms-and-conditions">terms and conditions</Link>.
                         </Typography>
                     }
                 />
@@ -227,7 +225,7 @@ export const RegisterFirebaseAuth: FC = (props) => {
                     type="submit"
                     variant="contained"
                 >
-                    {t("Create account")}
+                    Create account
                 </Button>
                 {Boolean(formik.touched.submit && formik.errors.submit) && (
                     <FormHelperText sx={{ textAlign: "center" }} error>

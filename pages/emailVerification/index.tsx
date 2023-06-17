@@ -1,7 +1,5 @@
 import { Box, Card, Typography, Container, styled, TextField, Button, Zoom } from "@mui/material";
 import Head from "next/head";
-import { Guest } from "src/components/Guest";
-import { useTranslation } from "react-i18next";
 import BaseLayout from "@/layouts/BaseLayout";
 import { apiInstance } from "@/api-config/api";
 import { useEffect, useState } from "react";
@@ -33,7 +31,6 @@ function EmailVerification() {
     const { enqueueSnackbar } = useSnackbar();
     const isMountedRef = useRefMounted();
     const router = useRouter();
-    const { t }: { t: any } = useTranslation();
     const { oobCode } = router.query;
 
     useEffect(() => {
@@ -50,7 +47,7 @@ function EmailVerification() {
                 await checkEmailVerification();
             }
             if (isMountedRef() && user.emailVerified === true) {
-                enqueueSnackbar(t("Email verified successfully"), {
+                enqueueSnackbar("Email verified successfully", {
                     variant: "success",
                     anchorOrigin: {
                         vertical: "top",
@@ -90,7 +87,7 @@ function EmailVerification() {
                                         mb: 1,
                                     }}
                                 >
-                                    {t("Email verification")}
+                                    Email verification
                                 </Typography>
                                 <Typography
                                     variant="h4"
@@ -100,9 +97,8 @@ function EmailVerification() {
                                         mb: 3,
                                     }}
                                 >
-                                    {t(
-                                        "We've sent a verification link to your email. Please check your email and click on the link to verify your email."
-                                    )}
+                                    We've sent a verification link to your email. Please check your email and click on
+                                    the link to verify your email.
                                 </Typography>
                             </Box>
                         </Card>

@@ -24,14 +24,6 @@ export default function Tasks() {
     const [selectedProjectId, setSelectedProjectId] = useState("");
     const [selectedProjectName, setSelectedProjectName] = useState("");
 
-    const [filters, setFilters] = useState({
-        role: "",
-        active: false,
-    });
-    const [page, setPage] = useState<number>(0);
-    const [limit, setLimit] = useState<number>(25);
-
-    const [query, setQuery] = useState<string>("");
     const { data, loading, error, fetchData } = useFetchData(ability.can("manage", "all") ? getAdminTasks : getTasks);
     const {
         data: projectData,
@@ -66,7 +58,7 @@ export default function Tasks() {
         fetchProjectsList({});
         fetchUsersList({});
         console.log("usersData", usersData);
-    }, [filters, limit, query, page, ability, selectedProjectId]);
+    }, [ability, selectedProjectId]);
 
     useEffect(() => {
         if (projectData) {
@@ -79,59 +71,9 @@ export default function Tasks() {
         console.log("projectData", projectData);
     }, [projectData, selectedProjectId, selectedProjectName]);
 
-    useEffect(() => {
-        if (!data?.length) {
-            setPage((prevPage) => Math.max(0, prevPage - 1));
-        }
-    }, [data]);
-
-    useEffect(() => {
-        if (!data?.length) {
-            setPage((prevPage) => Math.max(0, prevPage - 1));
-        }
-    }, [data]);
-
     const handleProjectChange = (event) => {
         setSelectedProjectName(projectData.projects.find((project) => project.id == event.target.value).name);
         setSelectedProjectId(event.target.value);
-    };
-
-    const handlePageChange = (_event: any, newPage: number): void => {
-        setPage(newPage);
-    };
-
-    const handleLimitChange = (event: ChangeEvent<HTMLInputElement>): void => {
-        setLimit(parseInt(event.target.value));
-    };
-
-    const handleQueryChange = (query: string) => {
-        setPage(0);
-        setQuery(query);
-    };
-
-    const handleTabsChange = async (_event: SyntheticEvent, tabsValue: unknown) => {
-        let value = null;
-        value = tabsValue;
-        setPage(0);
-        if (value != "all" && value == "active") {
-            setFilters((prevFilters) => ({
-                ...prevFilters,
-                role: "",
-                active: true,
-            }));
-        } else if (value != "all" && value != "active") {
-            setFilters((prevFilters) => ({
-                ...prevFilters,
-                role: value,
-                active: false,
-            }));
-        } else {
-            setFilters((prevFilters) => ({
-                ...prevFilters,
-                role: "",
-                active: false,
-            }));
-        }
     };
 
     return (
@@ -154,14 +96,6 @@ export default function Tasks() {
                     <Results
                         tasks={data?.tasks}
                         getTasksList={getTasksList}
-                        handleTabsChange={handleTabsChange}
-                        filters={filters}
-                        page={page}
-                        limit={limit}
-                        handlePageChange={handlePageChange}
-                        handleLimitChange={handleLimitChange}
-                        query={query}
-                        handleQueryChange={handleQueryChange}
                         loading={loading}
                         error={error}
                         selectedProjectId={selectedProjectId}

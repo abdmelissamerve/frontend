@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, SyntheticEvent, ChangeEvent } from "react";
 import { Grid, Typography, CardContent, Card, Box, Divider, Avatar } from "@mui/material";
-import { useTranslation } from "react-i18next";
 import Text from "src/components/Text";
 import { Authenticated } from "src/components/Authenticated";
 import ExtendedSidebarLayout from "src/layouts/ExtendedSidebarLayout";
@@ -13,7 +12,7 @@ import { useRefMounted } from "src/hooks/useRefMounted";
 
 function EditProfileTab() {
     const isMountedRef = useRefMounted();
-    const { t }: { t: any } = useTranslation();
+
     const [profile, setProfile] = useState(null);
 
     const getProfile = useCallback(async () => {
@@ -83,7 +82,7 @@ function EditProfileTab() {
                                             <Grid container spacing={0}>
                                                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: "right" }}>
                                                     <Box pr={3} pb={2}>
-                                                        {t("First Name")}:
+                                                        First Name:
                                                     </Box>
                                                 </Grid>
                                                 <Grid item xs={12} sm={8} md={9}>
@@ -93,7 +92,7 @@ function EditProfileTab() {
                                                 </Grid>
                                                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: "right" }}>
                                                     <Box pr={3} pb={2}>
-                                                        {t("Last Name")}:
+                                                        Last Name:
                                                     </Box>
                                                 </Grid>
                                                 <Grid item xs={12} sm={8} md={9}>
@@ -104,7 +103,7 @@ function EditProfileTab() {
 
                                                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: "right" }}>
                                                     <Box pr={3} pb={2}>
-                                                        {t("Email address")}:
+                                                        Email address:
                                                     </Box>
                                                 </Grid>
                                                 <Grid item xs={12} sm={8} md={9}>
@@ -118,7 +117,7 @@ function EditProfileTab() {
                                                 </Grid>
                                                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: "right" }}>
                                                     <Box pr={3} pb={2}>
-                                                        {t("Password")}:
+                                                        Password:
                                                     </Box>
                                                 </Grid>
                                                 <Grid item xs={12} sm={8} md={9}>
@@ -127,7 +126,7 @@ function EditProfileTab() {
                                                             maxWidth: { xs: "auto", sm: 300 },
                                                         }}
                                                     >
-                                                        <Text color="black">{t("********")}</Text>
+                                                        <Text color="black">********</Text>
                                                     </Box>
                                                 </Grid>
                                             </Grid>

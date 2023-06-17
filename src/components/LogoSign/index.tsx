@@ -1,6 +1,5 @@
 import { Box, Tooltip, Badge, TooltipProps, tooltipClasses, styled, useTheme } from "@mui/material";
 import Link from "src/components/Link";
-import { useTranslation } from "react-i18next";
 
 const LogoWrapper = styled("div")(
     () => `
@@ -34,11 +33,8 @@ const TooltipWrapper = styled(({ className, ...props }: TooltipProps) => (
 }));
 
 function Logo() {
-    const { t }: { t: any } = useTranslation();
-    const theme = useTheme();
-
     return (
-        <TooltipWrapper title={t("CSML")} arrow>
+        <TooltipWrapper title="CSML" arrow>
             <LogoWrapper>
                 <LogoLink href="/">
                     <img src="/static/images/logo/logo.svg" />

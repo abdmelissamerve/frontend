@@ -1,6 +1,6 @@
 import { MouseEventHandler } from "react";
 import { Formik, FormikHelpers, FormikValues } from "formik";
-import { useTranslation } from "react-i18next";
+
 import {
     Grid,
     DialogContent,
@@ -39,8 +39,7 @@ const superUserOptions = [
 
 const AddUserForm = (props: FormProps = defaultProps) => {
     const { addUser, handleCancel, initialData, errorMessage } = props;
-    const { t }: { t: any } = useTranslation();
-    const theme = useTheme();
+
     const initialValues = {
         email: "",
         first_name: "",
@@ -53,13 +52,13 @@ const AddUserForm = (props: FormProps = defaultProps) => {
     };
 
     const validationSchema = Yup.object().shape({
-        first_name: Yup.string().max(255).required(t("The first name field is required")),
-        last_name: Yup.string().max(255).required(t("The last name field is required")),
+        first_name: Yup.string().max(255).required("The first name field is required"),
+        last_name: Yup.string().max(255).required("The last name field is required"),
         email: Yup.string()
-            .email(t("The email provided should be a valid email address"))
+            .email("The email provided should be a valid email address")
             .max(255)
-            .required(t("The email field is required")),
-        password: Yup.string().max(255).required(t("The password field is required")),
+            .required("The email field is required"),
+        password: Yup.string().max(255).required("The password field is required"),
     });
 
     return (
@@ -78,7 +77,7 @@ const AddUserForm = (props: FormProps = defaultProps) => {
                                     error={Boolean(touched.first_name && errors.first_name)}
                                     fullWidth
                                     helperText={touched.first_name && errors.first_name}
-                                    label={t("First name")}
+                                    label="First name"
                                     name="first_name"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
@@ -91,7 +90,7 @@ const AddUserForm = (props: FormProps = defaultProps) => {
                                     error={Boolean(touched.last_name && errors.last_name)}
                                     fullWidth
                                     helperText={touched.last_name && errors.last_name}
-                                    label={t("Last name")}
+                                    label="Last name"
                                     name="last_name"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
@@ -104,7 +103,7 @@ const AddUserForm = (props: FormProps = defaultProps) => {
                                     error={Boolean(touched.email && errors.email)}
                                     fullWidth
                                     helperText={touched.email && errors.email}
-                                    label={t("Email address")}
+                                    label="Email address"
                                     name="email"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
@@ -118,7 +117,7 @@ const AddUserForm = (props: FormProps = defaultProps) => {
                                     error={Boolean(touched.password && errors.password)}
                                     fullWidth
                                     helperText={touched.password && errors.password}
-                                    label={t("Password")}
+                                    label="Password"
                                     name="password"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
@@ -136,7 +135,7 @@ const AddUserForm = (props: FormProps = defaultProps) => {
                                     onChange={(event, value) => {
                                         setFieldValue("role", value);
                                     }}
-                                    renderInput={(params) => <TextField fullWidth {...params} label={t("Role")} />}
+                                    renderInput={(params) => <TextField fullWidth {...params} label="Role" />}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -144,32 +143,6 @@ const AddUserForm = (props: FormProps = defaultProps) => {
                                     {errors.submit}
                                 </Typography>
                             </Grid>
-
-                            {/*<Grid item xs={12} md={6}>*/}
-                            {/*  <TextField*/}
-                            {/*    style={{width: "200px"}}*/}
-                            {/*    variant="outlined"*/}
-                            {/*    name="ctive"*/}
-                            {/*    select*/}
-                            {/*    label={t('Active')}*/}
-                            {/*    value={values.is_active}*/}
-                            {/*    onChange={handleChange}*/}
-                            {/*    error={Boolean(touched.is_active && errors.is_active)}*/}
-                            {/*    helperText={*/}
-                            {/*      touched.is_active && errors.is_active*/}
-                            {/*    }*/}
-                            {/*  >*/}
-                            {/*    <MenuItem key={""} value={""}>*/}
-                            {/*      No Selected // Or Empty*/}
-                            {/*    </MenuItem>*/}
-                            {/*    <MenuItem key={''} value={true}>*/}
-                            {/*      {'Active'}*/}
-                            {/*    </MenuItem>*/}
-                            {/*    <MenuItem key={''} value={false}>*/}
-                            {/*      {'Inactive'}*/}
-                            {/*    </MenuItem>*/}
-                            {/*  </TextField>*/}
-                            {/*</Grid>*/}
                         </Grid>
                     </DialogContent>
                     <DialogActions
@@ -178,7 +151,7 @@ const AddUserForm = (props: FormProps = defaultProps) => {
                         }}
                     >
                         <Button color="secondary" onClick={(event) => handleCancel(event)}>
-                            {t("Cancel")}
+                            Cancel
                         </Button>
                         <Button
                             type="submit"
@@ -186,7 +159,7 @@ const AddUserForm = (props: FormProps = defaultProps) => {
                             disabled={Boolean(errors.submit) || isSubmitting}
                             variant="contained"
                         >
-                            {t("Add new user")}
+                            Add new user
                         </Button>
                     </DialogActions>
                 </form>

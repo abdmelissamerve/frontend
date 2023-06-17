@@ -17,16 +17,8 @@ import {
 } from "@mui/material";
 import { useAuth } from "src/hooks/useAuth";
 import { useRefMounted } from "src/hooks/useRefMounted";
-import { useTranslation } from "react-i18next";
-
-const ImgWrapper = styled("img")(
-    ({ theme }) => `
-    margin-right: ${theme.spacing(1)};
-`
-);
 
 export const LoginFirebaseAuth: FC = (props) => {
-    const { t }: { t: any } = useTranslation();
     const { signInWithEmailAndPassword } = useAuth() as any;
     const isMountedRef = useRefMounted();
     const router = useRouter();
@@ -40,11 +32,11 @@ export const LoginFirebaseAuth: FC = (props) => {
         },
         validationSchema: Yup.object({
             email: Yup.string()
-                .email(t("The email provided should be a valid email address"))
+                .email("The email provided should be a valid email address")
                 .max(255)
-                .required(t("The email field is required")),
-            password: Yup.string().max(255).required(t("The password field is required")),
-            terms: Yup.boolean().oneOf([true], t("You must agree to our terms and conditions")),
+                .required("The email field is required"),
+            password: Yup.string().max(255).required("The password field is required"),
+            terms: Yup.boolean().oneOf([true], "You must agree to our terms and conditions"),
         }),
         onSubmit: async (values, helpers): Promise<void> => {
             try {
@@ -76,8 +68,8 @@ export const LoginFirebaseAuth: FC = (props) => {
                     error={Boolean(formik.touched.email && formik.errors.email)}
                     fullWidth
                     helperText={formik.touched.email && formik.errors.email}
-                    label={t("Email address")}
-                    placeholder={t("Your email address here...")}
+                    label="Email address"
+                    placeholder="Your email address here..."
                     margin="normal"
                     name="email"
                     onBlur={formik.handleBlur}
@@ -90,8 +82,8 @@ export const LoginFirebaseAuth: FC = (props) => {
                     error={Boolean(formik.touched.password && formik.errors.password)}
                     fullWidth
                     helperText={formik.touched.password && formik.errors.password}
-                    label={t("Password")}
-                    placeholder={t("Your password here...")}
+                    label="Password"
+                    placeholder="Your password here..."
                     margin="normal"
                     name="password"
                     onBlur={formik.handleBlur}
@@ -113,9 +105,9 @@ export const LoginFirebaseAuth: FC = (props) => {
                         label={
                             <>
                                 <Typography variant="body2">
-                                    {t("I accept the")}{" "}
+                                    I accept the{" "}
                                     <Link href="https://pinglatency.com/terms-and-conditions">
-                                        {t("terms and conditions")}
+                                        terms and conditions
                                     </Link>
                                     .
                                 </Typography>
@@ -123,7 +115,7 @@ export const LoginFirebaseAuth: FC = (props) => {
                         }
                     />
                     <Link href="/recover-password">
-                        <b>{t("Lost password?")}</b>
+                        <b>Lost password?</b>
                     </Link>
                 </Box>
                 {Boolean(formik.touched.terms && formik.errors.terms) && (
@@ -149,7 +141,7 @@ export const LoginFirebaseAuth: FC = (props) => {
                     type="submit"
                     variant="contained"
                 >
-                    {t("Sign in")}
+                    Sign in
                 </Button>
                 <Typography sx={{ mt: 3, textAlign: "center" }}>
                     Don't have an account?{" "}

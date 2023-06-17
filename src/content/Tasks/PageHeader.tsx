@@ -1,6 +1,5 @@
 import { useState, FC, useContext } from "react";
 
-import { useTranslation } from "react-i18next";
 
 import { Grid, Dialog, DialogTitle, Zoom, Typography, Button, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
@@ -35,7 +34,6 @@ const PageHeader: FC<Props> = ({
     usersList,
     getTasksList
 }) => {
-    const { t }: { t: any } = useTranslation();
     const [open, setOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const { enqueueSnackbar } = useSnackbar();
@@ -70,7 +68,7 @@ const PageHeader: FC<Props> = ({
                     >
                     
                          <FormControl fullWidth variant="outlined">
-                                    <InputLabel>{t("Projects")}</InputLabel>
+                                    <InputLabel>"Projects"</InputLabel>
                                     <Select
                                      sx={{
                                         minWidth: 200,
@@ -78,7 +76,7 @@ const PageHeader: FC<Props> = ({
                                     }}
                                         value={selectedProjectId}
                                         onChange={handleProjectChange}
-                                        label={t("Projects")}
+                                        label="Projects"
                                     >
                             {projects.map((project) => (
                                 <MenuItem key={project.id} value={project.id}
@@ -101,7 +99,7 @@ const PageHeader: FC<Props> = ({
                         variant="contained"
                         startIcon={<AddTwoToneIcon fontSize="small" />}
                     >
-                        {t("Create task")}
+                        Create task
                     </Button>
                 </Grid>
             </Grid>
@@ -112,10 +110,10 @@ const PageHeader: FC<Props> = ({
                     }}
                 >
                     <Typography variant="h4" gutterBottom>
-                        {t("Add new task")}
+                        Add new task
                     </Typography>
                     <Typography variant="subtitle2">
-                        {t("Fill in the fields below to create and add a new user to the site")}
+                        Fill in the fields below to create and add a new user to the site
                     </Typography>
                 </DialogTitle>
 
@@ -126,10 +124,10 @@ const PageHeader: FC<Props> = ({
                         }}
                     >
                         <Typography variant="h4" gutterBottom>
-                            {t("Add a new task")}
+                            Add a new task
                         </Typography>
                         <Typography variant="subtitle2">
-                            {t("Fill in the fields below to create a new project.")}
+                            Fill in the fields below to create a new project.
                         </Typography>
                     </DialogTitle>
                     <AddTaskForm handleClose={handleCreateProjectClose}

@@ -3,10 +3,9 @@ import { useEffect, useContext } from "react";
 import { ListSubheader, alpha, Box, List, styled } from "@mui/material";
 import SidebarMenuItem from "./item";
 import { menuItems, userMenu, MenuItem } from "./items";
-import { useTranslation } from "react-i18next";
+
 import { useRouter } from "next/router";
 import { AbilityContext } from "@/contexts/Can";
-import ability from "@/utils/ability";
 
 const MenuWrapper = styled(Box)(
     ({ theme }) => `
@@ -202,7 +201,6 @@ const reduceChildRoutes = ({
 };
 
 function SidebarMenu() {
-    const { t }: { t: any } = useTranslation();
     const router = useRouter();
     const ability = useContext(AbilityContext);
 
@@ -223,7 +221,7 @@ function SidebarMenu() {
                               component="div"
                               subheader={
                                   <ListSubheader data-cy="header" component="div" disableSticky>
-                                      {t(section.heading)}
+                                      {section.heading}
                                   </ListSubheader>
                               }
                           >
@@ -241,7 +239,7 @@ function SidebarMenu() {
                               component="div"
                               subheader={
                                   <ListSubheader data-cy="header" component="div" disableSticky>
-                                      {t(section.heading)}
+                                      {section.heading}
                                   </ListSubheader>
                               }
                           >

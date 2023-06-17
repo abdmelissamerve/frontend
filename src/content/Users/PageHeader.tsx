@@ -18,12 +18,9 @@ const AddUserForm = dynamic(() => import("./AddUserForm"), {
 
 interface Props {
     getUsersList: Function;
-    filters: any;
-    limit: any;
 }
 
-const PageHeader: FC<Props> = ({ getUsersList, filters, limit }) => {
-    const { t }: { t: any } = useTranslation();
+const PageHeader: FC<Props> = ({ getUsersList }) => {
     const [open, setOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const { enqueueSnackbar } = useSnackbar();
@@ -42,13 +39,7 @@ const PageHeader: FC<Props> = ({ getUsersList, filters, limit }) => {
             setStatus({ success: true });
             setSubmitting(false);
             handleCreateUserSuccess();
-            getUsersList({
-                search: "",
-                role: filters.role,
-                is_active: filters.active,
-                skip: 0,
-                limit: limit,
-            });
+            getUsersList({});
         } catch (err) {
             console.log(err);
             setStatus({ success: false });
@@ -67,7 +58,7 @@ const PageHeader: FC<Props> = ({ getUsersList, filters, limit }) => {
     };
 
     const handleCreateUserSuccess = () => {
-        enqueueSnackbar(t("The user account was created successfully"), {
+        enqueueSnackbar("The user account was created successfully", {
             variant: "success",
             anchorOrigin: {
                 vertical: "top",
@@ -84,7 +75,7 @@ const PageHeader: FC<Props> = ({ getUsersList, filters, limit }) => {
             <Grid container justifyContent="space-between" alignItems="center">
                 <Grid item>
                     <Typography variant="h3" component="h3" gutterBottom>
-                        {t("Users List")}
+                        Users List
                     </Typography>
                 </Grid>
                 <Grid item>
@@ -96,7 +87,7 @@ const PageHeader: FC<Props> = ({ getUsersList, filters, limit }) => {
                         variant="contained"
                         startIcon={<AddTwoToneIcon fontSize="small" />}
                     >
-                        {t("Create user")}
+                        Create user
                     </Button>
                 </Grid>
             </Grid>
@@ -107,10 +98,10 @@ const PageHeader: FC<Props> = ({ getUsersList, filters, limit }) => {
                     }}
                 >
                     <Typography variant="h4" gutterBottom>
-                        {t("Add new user")}
+                        Add new user
                     </Typography>
                     <Typography variant="subtitle2">
-                        {t("Fill in the fields below to create and add a new user to the site")}
+                        Fill in the fields below to create and add a new user to the site
                     </Typography>
                 </DialogTitle>
                 <AddUserForm

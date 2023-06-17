@@ -1,6 +1,5 @@
 import { Box, Card, Typography, Container, styled, TextField, Button, Zoom, CircularProgress } from "@mui/material";
 import Head from "next/head";
-import { useTranslation } from "react-i18next";
 import BaseLayout from "@/layouts/BaseLayout";
 import { apiInstance } from "@/api-config/api";
 import { useState } from "react";
@@ -32,7 +31,6 @@ function PhoneVerification() {
     const { enqueueSnackbar } = useSnackbar();
     const isMountedRef = useRefMounted();
     const router = useRouter();
-    const { t }: { t: any } = useTranslation();
 
     const formik = useFormik({
         initialValues: {
@@ -42,13 +40,13 @@ function PhoneVerification() {
         validationSchema: Yup.object({
             code: Yup.string()
                 .matches(/^\d{6}$/, "The code must be a 6-digit number")
-                .required(t("The code field is required")),
+                .required("The code field is required"),
         }),
         onSubmit: async (values, helpers): Promise<void> => {
             try {
                 const response = await apiInstance.verifyCode(values.code);
                 if (isMountedRef() && response.data.result === true) {
-                    enqueueSnackbar(t("Phone verified successfully"), {
+                    enqueueSnackbar("Phone verified successfully", {
                         variant: "success",
                         anchorOrigin: {
                             vertical: "top",
@@ -93,7 +91,7 @@ function PhoneVerification() {
                                             mb: 1,
                                         }}
                                     >
-                                        {t("Phone number verification")}
+                                        Phone number verification
                                     </Typography>
                                     <Typography
                                         variant="h4"
@@ -103,14 +101,14 @@ function PhoneVerification() {
                                             mb: 3,
                                         }}
                                     >
-                                        {t("Please input the verification code sent to your phone")}
+                                        "Please input the verification code sent to your phone"
                                     </Typography>
                                     <TextField
                                         error={Boolean(formik.touched.code && formik.errors.code)}
                                         fullWidth
                                         helperText={formik.touched.code && formik.errors.code}
-                                        label={t("Code")}
-                                        placeholder={t("Input code here...")}
+                                        label="Code"
+                                        placeholder="Input code here..."
                                         margin="normal"
                                         name="code"
                                         onBlur={formik.handleBlur}
@@ -131,7 +129,7 @@ function PhoneVerification() {
                                         startIcon={formik.isSubmitting ? <CircularProgress size="1rem" /> : null}
                                         disabled={formik.isSubmitting}
                                     >
-                                        {t("Verify code")}
+                                        "Verify code"
                                     </Button>
                                 </Box>
                             </form>

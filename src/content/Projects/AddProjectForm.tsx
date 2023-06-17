@@ -33,7 +33,7 @@ export default function AddProjectForm(props) {
     const { initialData, handleClose }: any = props;
     const isMountedRef = useRefMounted();
     const theme = useTheme();
-    const { t }: { t: any } = useTranslation();
+
     const initialValues = {
         name: "",
         description: "",
@@ -44,13 +44,11 @@ export default function AddProjectForm(props) {
     };
 
     const validationSchema = Yup.object().shape({
-        name: Yup.string().max(255).required(t("The name field is required")),
-        description: Yup.string().max(255).required(t("The description field is required")),
-        dueDate: Yup.string().max(255).required(t("The due date field is required")),
-        status: Yup.string().max(255).required(t("The status field is required")),
-        assigne: ability.can("manage", "all")
-            ? Yup.string().max(255).required(t("The assigne field is required"))
-            : null,
+        name: Yup.string().max(255).required("The name field is required"),
+        description: Yup.string().max(255).required("The description field is required"),
+        dueDate: Yup.string().max(255).required("The due date field is required"),
+        status: Yup.string().max(255).required("The status field is required"),
+        assigne: ability.can("manage", "all") ? Yup.string().max(255).required("The assigne field is required") : null,
     });
 
     const onSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>): Promise<void> => {
@@ -75,7 +73,7 @@ export default function AddProjectForm(props) {
             handleClose();
             getProjectsList();
             if (isMountedRef()) {
-                enqueueSnackbar(t("Project added successfully"), {
+                enqueueSnackbar("Project added successfully", {
                     variant: "success",
                     anchorOrigin: {
                         vertical: "top",
@@ -87,7 +85,7 @@ export default function AddProjectForm(props) {
             }
         } catch (error) {
             if (isMountedRef()) {
-                enqueueSnackbar(t("Project could not be added"), {
+                enqueueSnackbar("Project could not be added", {
                     variant: "error",
                     anchorOrigin: {
                         vertical: "top",
@@ -127,7 +125,7 @@ export default function AddProjectForm(props) {
                                     }}
                                     alignSelf="center"
                                 >
-                                    <b>{t("Name")}:</b>
+                                    <b>Name:</b>
                                 </Box>
                             </Grid>
                             <Grid
@@ -143,7 +141,7 @@ export default function AddProjectForm(props) {
                                     error={Boolean(touched.name && errors.name)}
                                     fullWidth
                                     helperText={touched.name && errors.name}
-                                    label={t("Name")}
+                                    label="Name"
                                     name="name"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
@@ -159,7 +157,7 @@ export default function AddProjectForm(props) {
                                     }}
                                     alignSelf="center"
                                 >
-                                    <b>{t("Description")}:</b>
+                                    <b>Description:</b>
                                 </Box>
                             </Grid>
                             <Grid
@@ -175,7 +173,7 @@ export default function AddProjectForm(props) {
                                     error={Boolean(touched.description && errors.description)}
                                     fullWidth
                                     helperText={touched.description && errors.description}
-                                    label={t("Description")}
+                                    label="Description"
                                     name="description"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
@@ -191,7 +189,7 @@ export default function AddProjectForm(props) {
                                     }}
                                     alignSelf="center"
                                 >
-                                    <b>{t("Due Date")}:</b>
+                                    <b>Due Date:</b>
                                 </Box>
                             </Grid>
                             <Grid
@@ -230,7 +228,7 @@ export default function AddProjectForm(props) {
                                     }}
                                     alignSelf="center"
                                 >
-                                    <b>{t("Status")}:</b>
+                                    <b>Status:</b>
                                 </Box>
                             </Grid>
                             <Grid
@@ -243,13 +241,13 @@ export default function AddProjectForm(props) {
                                 md={9}
                             >
                                 <FormControl fullWidth variant="outlined">
-                                    <InputLabel>{t("Status")}</InputLabel>
+                                    <InputLabel>Status</InputLabel>
                                     <Select
                                         value={values.status}
                                         onChange={(e) => {
                                             setFieldValue("status", e.target.value);
                                         }}
-                                        label={t("Status")}
+                                        label="Status"
                                     >
                                         <MenuItem value={"Open"}>Open</MenuItem>
                                         <MenuItem value={"In Progress"}>In Progress</MenuItem>
@@ -275,7 +273,7 @@ export default function AddProjectForm(props) {
                                             }}
                                             alignSelf="center"
                                         >
-                                            <b>{t("Assign to")}:</b>
+                                            <b>Assign to:</b>
                                         </Box>
                                     </Grid>
                                     <Grid
@@ -288,14 +286,14 @@ export default function AddProjectForm(props) {
                                         md={9}
                                     >
                                         <FormControl fullWidth variant="outlined">
-                                            <InputLabel>{t("Users")}</InputLabel>
+                                            <InputLabel>Users</InputLabel>
                                             <Select
                                                 value={values.assigne}
                                                 onChange={(e) => {
                                                     console.log("e.target.value", e.target.value);
                                                     setFieldValue("assigne", e.target.value);
                                                 }}
-                                                label={t("Users")}
+                                                label="Users"
                                             >
                                                 {props?.usersList?.map((user) => (
                                                     <MenuItem key={user.id} value={user.id}>
@@ -328,7 +326,7 @@ export default function AddProjectForm(props) {
                         }}
                     >
                         <Button color="secondary" onClick={handleClose}>
-                            {t("Cancel")}
+                            Cancel
                         </Button>
                         {initialData ? (
                             <Button
@@ -337,7 +335,7 @@ export default function AddProjectForm(props) {
                                 disabled={Boolean(errors.submit) || isSubmitting}
                                 variant="contained"
                             >
-                                {t("Edit project")}
+                                Edit project
                             </Button>
                         ) : (
                             <Button
@@ -346,7 +344,7 @@ export default function AddProjectForm(props) {
                                 disabled={Boolean(errors.submit) || isSubmitting}
                                 variant="contained"
                             >
-                                {t("Add project ")}
+                                Add project
                             </Button>
                         )}
                     </DialogActions>

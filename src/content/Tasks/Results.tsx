@@ -20,7 +20,6 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
-import { useTranslation } from "next-i18next";
 import { forwardRef, ReactElement, useContext, useState } from "react";
 import LaunchTwoToneIcon from "@mui/icons-material/LaunchTwoTone";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
@@ -47,22 +46,7 @@ const Transition = forwardRef(function Transition(
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
-const Results = ({
-    selectedProjectId,
-    tasks,
-    getTasksList,
-    filters,
-    handleTabsChange,
-    page,
-    limit,
-    handleLimitChange,
-    handlePageChange,
-    handleQueryChange,
-    query,
-    loading,
-    error,
-}) => {
-    const { t }: { t: any } = useTranslation();
+const Results = ({ tasks, getTasksList, selectedProjectId, loading, error }) => {
     const ability = useContext(AbilityContext);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
@@ -141,29 +125,6 @@ const Results = ({
     return (
         <>
             <Card>
-                <Box p={2}>
-                    <TextField
-                        sx={{
-                            m: 0,
-                        }}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchTwoToneIcon />
-                                </InputAdornment>
-                            ),
-                        }}
-                        onChange={() => {}}
-                        placeholder={t("Search by name")}
-                        size="small"
-                        fullWidth
-                        margin="normal"
-                        variant="outlined"
-                    />
-                </Box>
-
-                <Divider />
-
                 {!tasks?.length ? (
                     <>
                         <Typography
@@ -224,7 +185,7 @@ const Results = ({
                                                 )}
                                                 <TableCell align="center">
                                                     <Typography noWrap>
-                                                        <Tooltip title={t("Edit")} arrow>
+                                                        <Tooltip title="Edit" arrow>
                                                             <IconButton
                                                                 onClick={() => {}}
                                                                 color="primary"
@@ -234,7 +195,7 @@ const Results = ({
                                                                 <LaunchTwoToneIcon fontSize="small" />
                                                             </IconButton>
                                                         </Tooltip>
-                                                        <Tooltip title={t("Delete")} arrow>
+                                                        <Tooltip title="Delete" arrow>
                                                             <IconButton
                                                                 onClick={() => {
                                                                     setConfirmDelete(true);
@@ -253,17 +214,6 @@ const Results = ({
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        <Box p={2}>
-                            <TablePagination
-                                component="div"
-                                count={-1}
-                                onPageChange={handlePageChange}
-                                onRowsPerPageChange={handleLimitChange}
-                                page={page}
-                                rowsPerPage={limit}
-                                rowsPerPageOptions={[5, 15, 30]}
-                            />
-                        </Box>
                     </>
                 )}
             </Card>
@@ -292,7 +242,7 @@ const Results = ({
                             }}
                             variant="h4"
                         >
-                            {t("Are you sure you want to permanently delete this task")}?
+                            Are you sure you want to permanently delete this task?
                         </Typography>
 
                         <Box>
@@ -307,7 +257,7 @@ const Results = ({
                                     setSelectedTask(null);
                                 }}
                             >
-                                {t("Cancel")}
+                                Cancel
                             </Button>
                             <Button
                                 onClick={handleDeleteCompleted}
@@ -319,7 +269,7 @@ const Results = ({
                                 variant="outlined"
                                 color="error"
                             >
-                                {t("Delete")}
+                                Delete
                             </Button>
                         </Box>
                     </Box>

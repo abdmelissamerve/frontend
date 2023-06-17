@@ -55,7 +55,6 @@ interface Props {
 }
 
 const EditButton: FC<Props> = ({ getProfile }) => {
-    const { t }: { t: any } = useTranslation();
     const { user } = useAuth();
 
     const [isOpen, setOpen] = useState<boolean>(false);
@@ -142,7 +141,7 @@ const EditButton: FC<Props> = ({ getProfile }) => {
     });
 
     const handleEditUserSuccess = () => {
-        enqueueSnackbar(t("The user was edited successfully"), {
+        enqueueSnackbar("The user was edited successfully", {
             variant: "success",
             anchorOrigin: {
                 vertical: "top",
@@ -215,8 +214,8 @@ const EditButton: FC<Props> = ({ getProfile }) => {
                                     error={Boolean(formik.touched.first_name && formik.errors.first_name)}
                                     fullWidth
                                     helperText={formik.touched.first_name && formik.errors.first_name}
-                                    label={t("First name")}
-                                    placeholder={t("Your first name...")}
+                                    label={"First name"}
+                                    placeholder={"Your first name..."}
                                     margin="normal"
                                     name="first_name"
                                     onBlur={formik.handleBlur}
@@ -235,8 +234,8 @@ const EditButton: FC<Props> = ({ getProfile }) => {
                                     }}
                                     fullWidth
                                     helperText={formik.touched.last_name && formik.errors.last_name}
-                                    label={t("Last name")}
-                                    placeholder={t("Your last name...")}
+                                    label={"Last name"}
+                                    placeholder={"Your last name..."}
                                     margin="normal"
                                     name="last_name"
                                     onBlur={formik.handleBlur}
@@ -357,7 +356,7 @@ const EditButton: FC<Props> = ({ getProfile }) => {
                                 type="submit"
                                 variant="contained"
                             >
-                                {t("Change profile")}
+                                Change profile
                             </Button>
                             {Boolean(formik.touched.submit && formik.errors.submit) && (
                                 <FormHelperText error>{formik.errors.submit}</FormHelperText>

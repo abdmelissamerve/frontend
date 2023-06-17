@@ -17,14 +17,6 @@ import { getUsers } from "@/services/admin/users";
 export default function Projects() {
     const ability = useContext(AbilityContext);
 
-    const [filters, setFilters] = useState({
-        role: "",
-        active: false,
-    });
-    const [page, setPage] = useState<number>(0);
-    const [limit, setLimit] = useState<number>(25);
-
-    const [query, setQuery] = useState<string>("");
     const { data, loading, error, fetchData } = useFetchData(
         ability.can("manage", "all") ? getAdminProjects : getProjects
     );
@@ -47,51 +39,7 @@ export default function Projects() {
     useEffect(() => {
         getProjectsList({});
         getUsersList({});
-    }, [filters, limit, query, page, ability]);
-
-    useEffect(() => {
-        if (!data?.length) {
-            setPage((prevPage) => Math.max(0, prevPage - 1));
-        }
-    }, [data]);
-
-    const handlePageChange = (_event: any, newPage: number): void => {
-        setPage(newPage);
-    };
-
-    const handleLimitChange = (event: ChangeEvent<HTMLInputElement>): void => {
-        setLimit(parseInt(event.target.value));
-    };
-
-    const handleQueryChange = (query: string) => {
-        setPage(0);
-        setQuery(query);
-    };
-
-    const handleTabsChange = async (_event: SyntheticEvent, tabsValue: unknown) => {
-        let value = null;
-        value = tabsValue;
-        setPage(0);
-        if (value != "all" && value == "active") {
-            setFilters((prevFilters) => ({
-                ...prevFilters,
-                role: "",
-                active: true,
-            }));
-        } else if (value != "all" && value != "active") {
-            setFilters((prevFilters) => ({
-                ...prevFilters,
-                role: value,
-                active: false,
-            }));
-        } else {
-            setFilters((prevFilters) => ({
-                ...prevFilters,
-                role: "",
-                active: false,
-            }));
-        }
-    };
+    }, [ability]);
 
     return (
         <>
@@ -106,14 +54,6 @@ export default function Projects() {
                     <Results
                         projects={data?.projects}
                         getProjectsList={getProjectsList}
-                        handleTabsChange={handleTabsChange}
-                        filters={filters}
-                        page={page}
-                        limit={limit}
-                        handlePageChange={handlePageChange}
-                        handleLimitChange={handleLimitChange}
-                        query={query}
-                        handleQueryChange={handleQueryChange}
                         loading={loading}
                         error={error}
                     />

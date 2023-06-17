@@ -1,6 +1,5 @@
-import { MouseEventHandler, useContext } from "react";
-import { FieldArray, Formik, FormikHelpers, FormikValues, ErrorMessage } from "formik";
-import { useTranslation } from "react-i18next";
+import { useContext } from "react";
+import { Formik, FormikHelpers, FormikValues } from "formik";
 import {
     Paper,
     Grid,
@@ -22,7 +21,7 @@ import {
 } from "@mui/material";
 import * as Yup from "yup";
 import "react-quill/dist/quill.snow.css";
-import AddCircleIcon from "@mui/icons-material/Add";
+
 import DatePicker from "@mui/lab/DatePicker";
 import { addTask as addTaskAsAdmin } from "@/services/admin/tasks";
 
@@ -37,8 +36,6 @@ export default function AddTaskForm(props) {
     const { initialData, loading, error, handleClose }: any = props;
     const isMountedRef = useRefMounted();
     const theme = useTheme();
-    const { t }: { t: any } = useTranslation();
-    console.log("props", props.usersList);
 
     const initialValues = {
         name: "",
@@ -50,13 +47,11 @@ export default function AddTaskForm(props) {
     };
 
     const validationSchema = Yup.object().shape({
-        name: Yup.string().max(255).required(t("The name field is required")),
-        description: Yup.string().max(255).required(t("The description field is required")),
-        dueDate: Yup.string().max(255).required(t("The due date field is required")),
-        status: Yup.string().max(255).required(t("The status field is required")),
-        assigne: ability.can("manage", "all")
-            ? Yup.string().max(255).required(t("The assigne field is required"))
-            : null,
+        name: Yup.string().max(255).required("The name field is required"),
+        description: Yup.string().max(255).required("The description field is required"),
+        dueDate: Yup.string().max(255).required("The due date field is required"),
+        status: Yup.string().max(255).required("The status field is required"),
+        assigne: ability.can("manage", "all") ? Yup.string().max(255).required("The assigne field is required") : null,
     });
 
     const onSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>): Promise<void> => {
@@ -84,7 +79,7 @@ export default function AddTaskForm(props) {
                 projectId: props.selectedProjectId,
             });
             if (isMountedRef()) {
-                enqueueSnackbar(t("Task added successfully"), {
+                enqueueSnackbar("Task added successfully", {
                     variant: "success",
                     anchorOrigin: {
                         vertical: "top",
@@ -96,7 +91,7 @@ export default function AddTaskForm(props) {
             }
         } catch (error) {
             if (isMountedRef()) {
-                enqueueSnackbar(t("Task could not be added"), {
+                enqueueSnackbar("Task could not be added", {
                     variant: "error",
                     anchorOrigin: {
                         vertical: "top",
@@ -136,7 +131,7 @@ export default function AddTaskForm(props) {
                                     }}
                                     alignSelf="center"
                                 >
-                                    <b>{t("Name")}:</b>
+                                    <b>"Name":</b>
                                 </Box>
                             </Grid>
                             <Grid
@@ -152,7 +147,7 @@ export default function AddTaskForm(props) {
                                     error={Boolean(touched.name && errors.name)}
                                     fullWidth
                                     helperText={touched.name && errors.name}
-                                    label={t("Name")}
+                                    label="Name"
                                     name="name"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
@@ -168,7 +163,7 @@ export default function AddTaskForm(props) {
                                     }}
                                     alignSelf="center"
                                 >
-                                    <b>{t("Description")}:</b>
+                                    <b>"Description":</b>
                                 </Box>
                             </Grid>
                             <Grid
@@ -184,7 +179,7 @@ export default function AddTaskForm(props) {
                                     error={Boolean(touched.description && errors.description)}
                                     fullWidth
                                     helperText={touched.description && errors.description}
-                                    label={t("Description")}
+                                    label="Description"
                                     name="description"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
@@ -200,7 +195,7 @@ export default function AddTaskForm(props) {
                                     }}
                                     alignSelf="center"
                                 >
-                                    <b>{t("Due Date")}:</b>
+                                    <b>"Due Date":</b>
                                 </Box>
                             </Grid>
                             <Grid
@@ -239,7 +234,7 @@ export default function AddTaskForm(props) {
                                     }}
                                     alignSelf="center"
                                 >
-                                    <b>{t("Status")}:</b>
+                                    <b>"Status":</b>
                                 </Box>
                             </Grid>
                             <Grid
@@ -252,13 +247,13 @@ export default function AddTaskForm(props) {
                                 md={9}
                             >
                                 <FormControl fullWidth variant="outlined">
-                                    <InputLabel>{t("Status")}</InputLabel>
+                                    <InputLabel>"Status"</InputLabel>
                                     <Select
                                         value={values.status}
                                         onChange={(e) => {
                                             setFieldValue("status", e.target.value);
                                         }}
-                                        label={t("Status")}
+                                        label="Status"
                                     >
                                         <MenuItem value={"Open"}>Open</MenuItem>
                                         <MenuItem value={"In Progress"}>In Progress</MenuItem>
@@ -284,7 +279,7 @@ export default function AddTaskForm(props) {
                                             }}
                                             alignSelf="center"
                                         >
-                                            <b>{t("Assign to")}:</b>
+                                            <b>"Assign to":</b>
                                         </Box>
                                     </Grid>
                                     <Grid
@@ -297,14 +292,14 @@ export default function AddTaskForm(props) {
                                         md={9}
                                     >
                                         <FormControl fullWidth variant="outlined">
-                                            <InputLabel>{t("Users")}</InputLabel>
+                                            <InputLabel>"Users"</InputLabel>
                                             <Select
                                                 value={values.assigne}
                                                 onChange={(e) => {
                                                     console.log("e.target.value", e.target.value);
                                                     setFieldValue("assigne", e.target.value);
                                                 }}
-                                                label={t("Users")}
+                                                label="Users"
                                             >
                                                 {props?.usersList?.users?.map((user) => (
                                                     <MenuItem key={user.id} value={user.id}>
@@ -337,7 +332,7 @@ export default function AddTaskForm(props) {
                         }}
                     >
                         <Button color="secondary" onClick={handleClose}>
-                            {t("Cancel")}
+                            "Cancel"
                         </Button>
                         {initialData ? (
                             <Button
@@ -346,7 +341,7 @@ export default function AddTaskForm(props) {
                                 disabled={Boolean(errors.submit) || isSubmitting}
                                 variant="contained"
                             >
-                                {t("Edit task")}
+                                "Edit task"
                             </Button>
                         ) : (
                             <Button
@@ -355,7 +350,7 @@ export default function AddTaskForm(props) {
                                 disabled={Boolean(errors.submit) || isSubmitting}
                                 variant="contained"
                             >
-                                {t("Add task ")}
+                                "Add task "
                             </Button>
                         )}
                     </DialogActions>
