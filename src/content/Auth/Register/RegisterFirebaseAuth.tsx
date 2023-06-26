@@ -43,6 +43,12 @@ export const RegisterFirebaseAuth: FC = (props) => {
                 .min(2)
                 .max(50)
                 .required("The first name field is required"),
+            phoneNumber: Yup.string()
+                .min(10)
+                .max(10)
+                .matches(phoneRegExp, "Phone number is not valid")
+                .required("The phone number field is required"),
+
             lastName: Yup.string()
                 .matches(/^[a-zA-Z\s]+$/, "The first name can only contain letters")
                 .min(2)
@@ -56,11 +62,7 @@ export const RegisterFirebaseAuth: FC = (props) => {
             confirmPassword: Yup.string()
                 .oneOf([Yup.ref("password"), null], "Passwords must match")
                 .required("The password confirmation field is required"),
-            phoneNumber: Yup.string()
-                .min(10)
-                .max(10)
-                .matches(phoneRegExp, "Phone number is not valid")
-                .required("The phone number field is required"),
+
             terms: Yup.boolean().oneOf([true], "You must agree to our terms and conditions"),
         }),
         onSubmit: async (values, helpers): Promise<void> => {
@@ -73,7 +75,6 @@ export const RegisterFirebaseAuth: FC = (props) => {
             };
             try {
                 const user = await apiInstance.registerUser(data);
-
                 if (user) {
                     await signInWithEmailAndPassword(values.email, values.password);
                     await apiInstance.sendVerificationCode();

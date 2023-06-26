@@ -3,6 +3,7 @@ import {
     Box,
     Button,
     Card,
+    Chip,
     Dialog,
     DialogTitle,
     Divider,
@@ -174,8 +175,10 @@ const Results = ({ projects, getProjectsList, loading, error, usersList }) => {
                                                     <Typography>{project.description}</Typography>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Typography>{project.status}</Typography>
-                                                </TableCell>
+  {project.status === 'Open' && <Chip label={project.status} color="primary" />}
+  {project.status === 'In Progress' && <Chip label={project.status} color="warning" />}
+  {project.status === 'Completed' && <Chip label={project.status} color="success" />}
+</TableCell>
                                                 <TableCell>
                                                     <Typography>
                                                         {moment(project.dueDate).format("DD/MM/YYYY")}

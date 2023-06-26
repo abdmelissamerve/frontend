@@ -3,6 +3,7 @@ import {
     Box,
     Button,
     Card,
+    Chip,
     Dialog,
     DialogTitle,
     Divider,
@@ -49,7 +50,7 @@ const Transition = forwardRef(function Transition(
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
-const Results = ({ tasks, getTasksList, selectedProjectId, loading, error, usersList }) => {
+const Results = ({ tasks, getTasksList, selectedProjectId, loading, error, usersList, selectedProjectUser }) => {
     const ability = useContext(AbilityContext);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
@@ -176,8 +177,10 @@ const Results = ({ tasks, getTasksList, selectedProjectId, loading, error, users
                                                     <Typography>{task.description}</Typography>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Typography>{task.status}</Typography>
-                                                </TableCell>
+  {task.status === 'Open' && <Chip label={task.status} color="primary" />}
+  {task.status === 'In Progress' && <Chip label={task.status} color="warning" />}
+  {task.status === 'Completed' && <Chip label={task.status} color="success" />}
+</TableCell>
                                                 <TableCell>
                                                     <Typography>{moment(task.dueDate).format("DD/MM/YYYY")}</Typography>
                                                 </TableCell>
@@ -331,6 +334,7 @@ const Results = ({ tasks, getTasksList, selectedProjectId, loading, error, users
                         getTasksList={getTasksList}
                         usersList={usersList}
                         selectedProjectId={selectedProjectId}
+                        selectedProjectUser={selectedProjectUser}
                     />
                 </Dialog>
             </Dialog>

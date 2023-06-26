@@ -46,7 +46,7 @@ export default function EditProjectForm(props) {
     const initialValues = {
         ...initialData,
     };
-    console.log("initialValues", initialValues);
+
 
     const validationSchema = Yup.object().shape({
         name: Yup.string().max(255).required("The name field is required"),
@@ -326,7 +326,7 @@ export default function EditProjectForm(props) {
                                             getOptionLabel={(option) => option.label || ""}
                                             defaultValue={values.assigne || null}
                                             onChange={(event, value) => {
-                                                console.log("value", value);
+                                               
                                                 setFieldValue("assigne", value);
                                             }}
                                             renderInput={(params) => (

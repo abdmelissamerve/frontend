@@ -75,7 +75,7 @@ const Results: FC<ResultsProps> = ({ users, getUsersList, loading, error }) => {
     const timeout = useRef<ReturnType<typeof setTimeout>>();
 
     const handleOpenEditUser = (user) => {
-        console.log(user);
+     
         setUserData({
             id: user.id,
             firstName: user.firstName,
@@ -141,7 +141,7 @@ const Results: FC<ResultsProps> = ({ users, getUsersList, loading, error }) => {
                 phoneNumber: _values.phoneNumber,
             };
 
-            console.log(data);
+    
             await updateUser(data, userData.id);
             await getUsersList({});
             resetForm();

@@ -58,7 +58,7 @@ const EditButton: FC<Props> = ({ getProfile }) => {
 
     const handleOpen = (): void => {
         setOpen(true);
-        console.log(user);
+   
         formik.initialValues.firstName = user?.name?.slice(0, user?.name.indexOf(" "));
         formik.initialValues.lastName = user?.name?.slice(user?.name.indexOf(" ") + 1);
     };

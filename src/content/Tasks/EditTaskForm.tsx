@@ -40,16 +40,16 @@ const statusOptions = [
 export default function EditTaskForm(props) {
     const { enqueueSnackbar } = useSnackbar();
     const ability = useContext(AbilityContext);
-    const { initialData, loading, error, handleClose }: any = props;
+    const { initialData, loading, error, handleClose, selectedProjectUser }: any = props;
     const isMountedRef = useRefMounted();
     const theme = useTheme();
     const [usersList, setUsersList] = useState([]);
+
 
     const initialValues = {
         name: "",
         description: "",
         dueDate: "",
-        assigne: "",
         status: "",
         ...initialData,
     };
@@ -65,19 +65,11 @@ export default function EditTaskForm(props) {
             })
             .nullable()
             .required("Status is required"),
-        assigne: ability.can("manage", "all")
-            ? Yup.object()
-                  .shape({
-                      label: Yup.string().required("Assinge is required"),
-                      value: Yup.string().required("Assinge is required"),
-                  })
-                  .nullable()
-                  .required("Assinge is required")
-            : null,
+ 
     });
 
     const onSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>): Promise<void> => {
-        console.log("values", values);
+     
         const data = {
             name: values.name,
             description: values.description,
@@ -85,11 +77,10 @@ export default function EditTaskForm(props) {
             status: values.status?.value,
         };
 
-        console.log("data", data, initialData);
+     
 
         try {
             if (ability.can("manage", "all")) {
-                data["user"] = values.assigne.value;
                 await updateTaskAsAdmin(data, initialData.id);
             } else {
                 await updateTask(data, initialData.id);
@@ -335,9 +326,12 @@ export default function EditTaskForm(props) {
                                             disablePortal
                                             options={usersList || []}
                                             getOptionLabel={(option) => option.label || ""}
-                                            defaultValue={values.assigne || null}
+                                            defaultValue={{
+                                                label: selectedProjectUser?.firstName + " " + selectedProjectUser?.lastName,
+                                                value: selectedProjectUser?.id,
+                                            } || null}
                                             onChange={(event, value) => {
-                                                console.log("value", value);
+                                    
                                                 setFieldValue("assigne", value);
                                             }}
                                             renderInput={(params) => (
@@ -345,8 +339,8 @@ export default function EditTaskForm(props) {
                                                     fullWidth
                                                     {...params}
                                                     label="Assigne"
-                                                    error={touched.assigne && !!errors.assigne}
-                                                    helperText={touched.assigne && errors.assigne?.label}
+                                                    // error={touched.assigne && !!errors.assigne}
+                                                    // helperText={touched.assigne && errors.assigne?.label}
                                                 />
                                             )}
                                         />

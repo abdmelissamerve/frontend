@@ -104,6 +104,7 @@ export default function Tasks() {
                         error={error}
                         selectedProjectId={selectedProjectId}
                         usersList={usersData}
+                        selectedProjectUser={selectedProjectUser}
                     />
                 </Grid>
             </Grid>

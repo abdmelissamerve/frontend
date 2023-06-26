@@ -1,5 +1,4 @@
-import { FieldArray, Formik, FormikHelpers, FormikValues, ErrorMessage } from "formik";
-import { useTranslation } from "react-i18next";
+import { Formik, FormikHelpers, FormikValues } from "formik";
 import {
     Grid,
     DialogContent,
@@ -330,7 +329,7 @@ export default function AddProjectForm(props) {
                                             getOptionLabel={(option) => option.label || ""}
                                             defaultValue={values.assigne || null}
                                             onChange={(event, value) => {
-                                                console.log("value", value);
+                                               
                                                 setFieldValue("assigne", value);
                                             }}
                                             renderInput={(params) => (

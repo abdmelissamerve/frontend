@@ -73,7 +73,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         firebase.auth().onIdTokenChanged((user) => {
             if (user) {
                 user.getIdToken().then(async (idToken) => {
-                    console.log(idToken);
+           
                     let userObj = {
                         uid: user.uid,
                         email: user.email,

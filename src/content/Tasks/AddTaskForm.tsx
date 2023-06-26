@@ -50,7 +50,6 @@ export default function AddTaskForm(props) {
         name: "",
         description: "",
         dueDate: "",
-        assigne: "",
         status: "",
         ...initialData,
     };
@@ -66,15 +65,6 @@ export default function AddTaskForm(props) {
             })
             .nullable()
             .required("Status is required"),
-        assigne: ability.can("manage", "all")
-            ? Yup.object()
-                  .shape({
-                      label: Yup.string().required("Assinge is required"),
-                      value: Yup.string().required("Assinge is required"),
-                  })
-                  .nullable()
-                  .required("Assinge is required")
-            : null,
     });
 
     const onSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>): Promise<void> => {
@@ -88,7 +78,6 @@ export default function AddTaskForm(props) {
 
         try {
             if (ability.can("manage", "all")) {
-                data["user"] = values.assigne.value;
                 await addTaskAsAdmin(data);
             } else {
                 await addTask(data);
@@ -344,7 +333,7 @@ export default function AddTaskForm(props) {
                                                 }
                                             }
                                             onChange={(event, value) => {
-                                                console.log("value", value);
+                                    
                                                 setFieldValue("assigne", value);
                                             }}
                                             renderInput={(params) => (
@@ -352,8 +341,7 @@ export default function AddTaskForm(props) {
                                                     fullWidth
                                                     {...params}
                                                     label="Assigned to"
-                                                    error={touched.assigne && !!errors.assigne}
-                                                    helperText={touched.assigne && errors.assigne?.label}
+                                                  
                                                 />
                                             )}
                                         />
@@ -361,11 +349,11 @@ export default function AddTaskForm(props) {
                                 </>
                             ) : null}
 
-                            <Grid item xs={12}>
-                                <FormHelperText sx={{ textAlign: "center" }} error>
-                                    {errors.submit}
-                                </FormHelperText>
-                            </Grid>
+                                    <Grid item xs={12}>
+                                        <FormHelperText sx={{ textAlign: "center" }} error>
+                                            {errors.submit}
+                                        </FormHelperText>
+                                    </Grid>
                         </Grid>
                     </DialogContent>
                     <DialogActions
